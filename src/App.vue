@@ -1,47 +1,157 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+<!-- <script setup>
+ import { ref } from 'vue'
+
 </script>
-
+ 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+  <div class="text-center">
+  <-- <div>
+    <input type="radio" name="level" id="easy" value="1" v-model="level"/>
+    <label for="easy" class="me-4">Easy</label>
+    <input type="radio" name="level" id="medium" value="2" v-model="level" checked/>
+    <label for="medium" class="me-4">Medium</label>
+    <input type="radio" name="level" id="hard" value="3" v-model="level" />
+    <label for="hard" class="me-4">Hard</label>
+  </div> -->
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+<!-- <div>
+    <button class="btn bg-green-600 text-white mt-3"
+     @click="$emit('start-play',this.level)">START</button>
+  </div>
+  </div>
+  
+
+</template>
+ 
+<style scoped></style> -->
+
+<!-- App.vue -->
+<template>
+  <div class="flex flex-col items-center mt-8">
+    <h1 class="text-3xl font-bold mb-4">15 Puzzle Game</h1>
+
+    <button
+      v-if="!gameStarted"
+      @click="startGame"
+      class="bg-blue-500 text-white py-2 px-4 rounded"
+    >
+      Start
+    </button>
+
+    <div v-if="gameStarted" class="flex flex-col items-center mt-4">
+      <p class="mb-2">Moves: {{ moves }}</p>
+      <p class="mb-4">Counter: {{ counter }}</p>
+
+      <div class="grid grid-cols-4 gap-2">
+        <div
+          v-for="(tile, index) in tiles"
+          :key="index"
+          @click="moveTile(index)"
+          class="w-16 h-16 border border-gray-300 flex items-center justify-center text-2xl cursor-pointer bg-white"
+        >
+          {{ tile === 0 ? " " : tile }}
+        </div>
+      </div>
+
+      <button
+        @click="shuffle"
+        class="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
+      >
+        Shuffle
+      </button>
     </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+  </div>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-}
+<script>
+import { ref, onMounted } from "vue";
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
+export default {
+  setup() {
+    const tiles = ref([]);
+    const moves = ref(0);
+    const counter = ref(0);
+    const gameStarted = ref(false);
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
+    const startGame = () => {
+      gameStarted.value = true;
+      shuffle();
+    };
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
+    const shuffle = () => {
+      tiles.value = shuffleArray([...Array(16).keys()]);
+      moves.value = 0;
+      counter.value = 0;
+    };
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
-</style>
+    const shuffleArray = (array) => {
+      let currentIndex = array.length,
+        randomIndex;
+      while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        [array[currentIndex], array[randomIndex]] = [
+          array[randomIndex],
+          array[currentIndex],
+        ];
+      }
+      return array;
+    };
+
+    const moveTile = (index) => {
+      const emptyIndex = tiles.value.indexOf(0);
+      if (isValidMove(index, emptyIndex)) {
+        moves.value++;
+        counter.value++;
+        [tiles.value[index], tiles.value[emptyIndex]] = [
+          tiles.value[emptyIndex],
+          tiles.value[index],
+        ];
+        if (isSolved()) {
+          alert("Congratulations! Puzzle solved.");
+          gameStarted.value = false;
+        }
+      }
+    };
+
+    const isValidMove = (index, emptyIndex) => {
+      const row = Math.floor(index / 4);
+      const col = index % 4;
+
+      const emptyRow = Math.floor(emptyIndex / 4);
+      const emptyCol = emptyIndex % 4;
+
+      return (
+        (row === emptyRow && Math.abs(col - emptyCol) === 1) ||
+        (col === emptyCol && Math.abs(row - emptyRow) === 1)
+      );
+    };
+
+    const isSolved = () => {
+      for (let i = 0; i < tiles.value.length - 1; i++) {
+        if (tiles.value[i] !== i + 1) {
+          return false;
+        }
+      }
+      return true;
+    };
+
+    onMounted(() => {
+      shuffle();
+    });
+
+    return {
+      tiles,
+      moves,
+      counter,
+      gameStarted,
+      startGame,
+      shuffle,
+      moveTile,
+    };
+  },
+};
+</script>
+
+<style scoped></style>
