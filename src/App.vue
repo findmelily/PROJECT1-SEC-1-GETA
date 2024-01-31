@@ -19,7 +19,7 @@
           v-for="(tile, index) in tiles"
           :key="index"
           @click="moveTile(index)"
-          class="w-16 h-16 border border-gray-300 flex items-center justify-center text-2xl cursor-pointer bg-white"
+          :class="checkPosition(index)"
         >
           {{ tile === 0 ? " " : tile }}
         </div>
@@ -35,81 +35,104 @@
   </div>
 </template>
 
-<script setup>
-import { ref, onMounted } from "vue";
+<script>
+import { ref, onMounted } from "vue"
 
-const tiles = ref([]);
-const moves = ref(0);
-const counter = ref(0);
-const gameStarted = ref(false);
+export default {
+  setup() {
+    const tiles = ref([])
+    const moves = ref(0)
+    const counter = ref(0)
+    const gameStarted = ref(false)
 
-const startGame = () => {
-  gameStarted.value = true;
-  shuffle();
-};
-
-const shuffle = () => {
-  tiles.value = shuffleArray([...Array(16).keys()]);
-  moves.value = 0;
-  counter.value = 0;
-};
-
-const shuffleArray = (array) => {
-  let currentIndex = array.length,
-    randomIndex;
-  while (currentIndex !== 0) {
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex--;
-
-    [array[currentIndex], array[randomIndex]] = [
-      array[randomIndex],
-      array[currentIndex],
-    ];
-  }
-  return array;
-};
-
-const moveTile = (index) => {
-  const emptyIndex = tiles.value.indexOf(0);
-  if (isValidMove(index, emptyIndex)) {
-    moves.value++;
-    counter.value++;
-    [tiles.value[index], tiles.value[emptyIndex]] = [
-      tiles.value[emptyIndex],
-      tiles.value[index],
-    ];
-    if (isSolved()) {
-      alert("Congratulations! Puzzle solved.");
-      gameStarted.value = false;
+    const checkPosition = (index) => {
+      return {
+        "w-16 h-16 border border-green-500 flex items-center justify-center text-2xl text-green-500 cursor-pointer bg-white":
+          tiles.value[index] === index + 1,
+        "w-16 h-16 border border-gray-300 flex items-center justify-center text-2xl cursor-pointer bg-white":
+          tiles.value[index] !== index + 1,
+      }
     }
-  }
-};
 
-const isValidMove = (index, emptyIndex) => {
-  const row = Math.floor(index / 4);
-  const col = index % 4;
-
-  const emptyRow = Math.floor(emptyIndex / 4);
-  const emptyCol = emptyIndex % 4;
-
-  return (
-    (row === emptyRow && Math.abs(col - emptyCol) === 1) ||
-    (col === emptyCol && Math.abs(row - emptyRow) === 1)
-  );
-};
-
-const isSolved = () => {
-  for (let i = 0; i < tiles.value.length - 1; i++) {
-    if (tiles.value[i] !== i + 1) {
-      return false;
+    const startGame = () => {
+      gameStarted.value = true
+      shuffle()
     }
-  }
-  return true;
-};
 
-onMounted(() => {
-  shuffle();
-});
+    const shuffle = () => {
+      tiles.value = shuffleArray([...Array(16).keys()])
+      moves.value = 0
+      counter.value = 0
+    }
+
+    const shuffleArray = (array) => {
+      let currentIndex = array.length,
+        randomIndex
+      while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex)
+        currentIndex--
+        ;[array[currentIndex], array[randomIndex]] = [
+          array[randomIndex],
+          array[currentIndex],
+        ]
+      }
+      return array
+    }
+
+    const moveTile = (index) => {
+      const emptyIndex = tiles.value.indexOf(0)
+      if (isValidMove(index, emptyIndex)) {
+        moves.value++
+        counter.value++
+        ;[tiles.value[index], tiles.value[emptyIndex]] = [
+          tiles.value[emptyIndex],
+          tiles.value[index],
+        ]
+        if (isSolved()) {
+          alert("Congratulations! Puzzle solved.")
+          gameStarted.value = false
+        }
+      }
+    }
+
+    const isValidMove = (index, emptyIndex) => {
+      const row = Math.floor(index / 4)
+      const col = index % 4
+
+      const emptyRow = Math.floor(emptyIndex / 4)
+      const emptyCol = emptyIndex % 4
+
+      return (
+        (row === emptyRow && Math.abs(col - emptyCol) === 1) ||
+        (col === emptyCol && Math.abs(row - emptyRow) === 1)
+      )
+    }
+
+    const isSolved = () => {
+      for (let i = 0; i < tiles.value.length - 1; i++) {
+        if (tiles.value[i] !== i + 1) {
+          return false
+        }
+      }
+      return true
+    }
+
+    onMounted(() => {
+      shuffle()
+    })
+
+    return {
+      tiles,
+      moves,
+      counter,
+      gameStarted,
+      startGame,
+      shuffle,
+      moveTile,
+      checkPosition,
+    }
+  },
+}
 </script>
 
 <style scoped></style>
