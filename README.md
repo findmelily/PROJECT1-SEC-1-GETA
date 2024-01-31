@@ -1,4 +1,4 @@
-# project1-sec-1-geta
+# Project1-Sec-1-GETA
 
 ## Member's name
 * 65130500007 นายจักรธร สอวิเศษ
