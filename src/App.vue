@@ -19,13 +19,10 @@
      @click="$emit('start-play',this.level)">START</button>
   </div>
   </div>
-  
 
 </template>
  
 <style scoped></style> -->
-
-<!-- App.vue -->
 <template>
   <div class="flex flex-col items-center mt-8">
     <h1 class="text-3xl font-bold mb-4">15 Puzzle Game</h1>
@@ -40,10 +37,10 @@
 
     <div v-if="gameStarted" class="flex flex-col items-center mt-4">
       <p class="mb-2">Moves: {{ moves }}</p>
-      <p class="mb-2">Counter: {{ counter }}</p>
+
       <p class="mb-4">Time: {{ formatTime(time) }}</p>
 
-      <div class="grid grid-cols-4 gap-2">
+      <!-- <div class="grid grid-cols-4 gap-2">
         <div
           v-for="(tile, index) in tiles"
           :key="index"
@@ -52,7 +49,22 @@
         >
           {{ tile === 0 ? " " : tile }}
         </div>
+      </div> -->
+      <div class="grid grid-cols-4 gap-2">
+        <div
+          v-for="(tile, index) in tiles"
+          :key="index"
+          @click="moveTile(index)"
+          :class="{
+            'w-16 h-16 border border-gray-300 flex items-center justify-center text-2xl cursor-pointer': true,
+            'bg-white': tile !== 0 && !isTileInCorrectPosition(index),
+            'bg-green-300': isTileInCorrectPosition(index)
+          }"
+        >
+          {{ tile === 0 ? " " : tile }}
+        </div>
       </div>
+
 
       <button
         @click="shuffle"
@@ -63,6 +75,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 import { ref, onMounted } from "vue"
