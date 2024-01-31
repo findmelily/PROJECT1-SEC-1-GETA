@@ -40,7 +40,8 @@
 
     <div v-if="gameStarted" class="flex flex-col items-center mt-4">
       <p class="mb-2">Moves: {{ moves }}</p>
-      <p class="mb-4">Counter: {{ counter }}</p>
+      <p class="mb-2">Counter: {{ counter }}</p>
+      <p class="mb-4">Time: {{ formatTime(time) }}</p>
 
       <div class="grid grid-cols-4 gap-2">
         <div
@@ -64,94 +65,112 @@
 </template>
 
 <script>
-import { ref, onMounted } from "vue";
+import { ref, onMounted } from "vue"
 
 export default {
   setup() {
-    const tiles = ref([]);
-    const moves = ref(0);
-    const counter = ref(0);
-    const gameStarted = ref(false);
+    const tiles = ref([])
+    const moves = ref(0)
+    const counter = ref(0)
+    const gameStarted = ref(false)
+    const time = ref(0)
 
     const startGame = () => {
-      gameStarted.value = true;
-      shuffle();
-    };
+      gameStarted.value = true
+      shuffle()
+      Timer()
+    }
+
+    const Timer = () => {
+      setInterval(() => {
+        time.value++
+      }, 1000)
+    }
+
+    const formatTime = (time) => {
+      const hours = `0${Math.floor(time / 3600)}`.slice(-2)
+      const minues = `0${Math.floor((time % 3600) / 60)}`.slice(-2)
+      const seconds = `0${time % 60}`.slice(-2)
+      return `${hours}:${minues}:${seconds}`
+    }
 
     const shuffle = () => {
-      tiles.value = shuffleArray([...Array(16).keys()]);
-      moves.value = 0;
-      counter.value = 0;
-    };
+      tiles.value = shuffleArray([...Array(16).keys()])
+      moves.value = 0
+      counter.value = 0
+      time.value = 0
+    }
 
     const shuffleArray = (array) => {
       let currentIndex = array.length,
-        randomIndex;
+        randomIndex
       while (currentIndex !== 0) {
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex--;
-
-        [array[currentIndex], array[randomIndex]] = [
+        randomIndex = Math.floor(Math.random() * currentIndex)
+        currentIndex--
+        ;[array[currentIndex], array[randomIndex]] = [
           array[randomIndex],
           array[currentIndex],
-        ];
+        ]
       }
-      return array;
-    };
+      return array
+    }
 
     const moveTile = (index) => {
-      const emptyIndex = tiles.value.indexOf(0);
+      const emptyIndex = tiles.value.indexOf(0)
       if (isValidMove(index, emptyIndex)) {
-        moves.value++;
-        counter.value++;
-        [tiles.value[index], tiles.value[emptyIndex]] = [
+        moves.value++
+        counter.value++
+        ;[tiles.value[index], tiles.value[emptyIndex]] = [
           tiles.value[emptyIndex],
           tiles.value[index],
-        ];
+        ]
         if (isSolved()) {
-          alert("Congratulations! Puzzle solved.");
-          gameStarted.value = false;
+          alert("Congratulations! Puzzle solved.")
+          gameStarted.value = false
         }
       }
-    };
+    }
 
     const isValidMove = (index, emptyIndex) => {
-      const row = Math.floor(index / 4);
-      const col = index % 4;
+      const row = Math.floor(index / 4)
+      const col = index % 4
 
-      const emptyRow = Math.floor(emptyIndex / 4);
-      const emptyCol = emptyIndex % 4;
+      const emptyRow = Math.floor(emptyIndex / 4)
+      const emptyCol = emptyIndex % 4
 
       return (
         (row === emptyRow && Math.abs(col - emptyCol) === 1) ||
         (col === emptyCol && Math.abs(row - emptyRow) === 1)
-      );
-    };
+      )
+    }
 
     const isSolved = () => {
       for (let i = 0; i < tiles.value.length - 1; i++) {
         if (tiles.value[i] !== i + 1) {
-          return false;
+          return false
         }
       }
-      return true;
-    };
+      return true
+    }
 
     onMounted(() => {
-      shuffle();
-    });
+      shuffle()
+    })
 
     return {
       tiles,
       moves,
       counter,
       gameStarted,
+      time,
       startGame,
       shuffle,
       moveTile,
-    };
+      Timer,
+      formatTime,
+    }
   },
-};
+}
 </script>
 
 <style scoped></style>
