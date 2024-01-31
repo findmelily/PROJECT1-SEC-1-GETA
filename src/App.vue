@@ -19,7 +19,6 @@
      @click="$emit('start-play',this.level)">START</button>
   </div>
   </div>
-  
 
 </template>
  
@@ -38,6 +37,8 @@
 
     <div v-if="gameStarted" class="flex flex-col items-center mt-4">
       <p class="mb-2">Moves: {{ moves }}</p>
+
+      <p class="mb-4">Time: {{ formatTime(time) }}</p>
 
       <!-- <div class="grid grid-cols-4 gap-2">
         <div
@@ -75,86 +76,114 @@
   </div>
 </template>
 
-<script setup>
-import { ref, onMounted } from "vue";
 
-const tiles = ref([]);
-const moves = ref(0);
-const counter = ref(0);
-const gameStarted = ref(false);
+<script>
+import { ref, onMounted } from "vue"
 
-const startGame = () => {
-  gameStarted.value = true;
-  shuffle();
-};
+export default {
+  setup() {
+    const tiles = ref([])
+    const moves = ref(0)
+    const counter = ref(0)
+    const gameStarted = ref(false)
+    const time = ref(0)
 
-const shuffle = () => {
-  tiles.value = shuffleArray([...Array(16).keys()]);
-  moves.value = 0;
-};
-
-const shuffleArray = (array) => {
-  let currentIndex = array.length,
-    randomIndex;
-  while (currentIndex !== 0) {
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex--;
-
-    [array[currentIndex], array[randomIndex]] = [
-      array[randomIndex],
-      array[currentIndex],
-    ];
-  }
-  return array;
-};
-
-const moveTile = (index) => {
-  const emptyIndex = tiles.value.indexOf(0);
-  if (isValidMove(index, emptyIndex)) {
-    moves.value++;
-    [tiles.value[index], tiles.value[emptyIndex]] = [
-      tiles.value[emptyIndex],
-      tiles.value[index],
-    ];
-    if (isSolved()) {
-      //alert("Congratulations! Puzzle solved.");
-      setTimeout(alert("Congratulations! Puzzle solved."),2000)
-      gameStarted.value = false;  
+    const startGame = () => {
+      gameStarted.value = true
+      shuffle()
+      Timer()
     }
-  }
-};
 
-const isValidMove = (index, emptyIndex) => {
-  const row = Math.floor(index / 4);
-  const col = index % 4;
-
-  const emptyRow = Math.floor(emptyIndex / 4);
-  const emptyCol = emptyIndex % 4;
-
-  return (
-    (row === emptyRow && Math.abs(col - emptyCol) === 1) ||
-    (col === emptyCol && Math.abs(row - emptyRow) === 1)
-  );
-};
-
-const isSolved = () => {
-  for (let i = 0; i < tiles.value.length - 1; i++) {
-    if (tiles.value[i] !== i + 1) {
-      return false;
+    const Timer = () => {
+      setInterval(() => {
+        time.value++
+      }, 1000)
     }
-  }
-  return true;
-};
 
-const isTileInCorrectPosition = (index) => {
-  const row = Math.floor(index / 4);
-  const col = index % 4;
-  return tiles.value[index] === row * 4 + col + 1;
-};
+    const formatTime = (time) => {
+      const hours = `0${Math.floor(time / 3600)}`.slice(-2)
+      const minues = `0${Math.floor((time % 3600) / 60)}`.slice(-2)
+      const seconds = `0${time % 60}`.slice(-2)
+      return `${hours}:${minues}:${seconds}`
+    }
 
-onMounted(() => {
-  shuffle();
-});
+    const shuffle = () => {
+      tiles.value = shuffleArray([...Array(16).keys()])
+      moves.value = 0
+      counter.value = 0
+      time.value = 0
+    }
+
+    const shuffleArray = (array) => {
+      let currentIndex = array.length,
+        randomIndex
+      while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex)
+        currentIndex--
+        ;[array[currentIndex], array[randomIndex]] = [
+          array[randomIndex],
+          array[currentIndex],
+        ]
+      }
+      return array
+    }
+
+    const moveTile = (index) => {
+      const emptyIndex = tiles.value.indexOf(0)
+      if (isValidMove(index, emptyIndex)) {
+        moves.value++
+        counter.value++
+        ;[tiles.value[index], tiles.value[emptyIndex]] = [
+          tiles.value[emptyIndex],
+          tiles.value[index],
+        ]
+        if (isSolved()) {
+          alert("Congratulations! Puzzle solved.")
+          gameStarted.value = false
+        }
+      }
+    }
+
+    const isValidMove = (index, emptyIndex) => {
+      const row = Math.floor(index / 4)
+      const col = index % 4
+
+      const emptyRow = Math.floor(emptyIndex / 4)
+      const emptyCol = emptyIndex % 4
+
+      return (
+        (row === emptyRow && Math.abs(col - emptyCol) === 1) ||
+        (col === emptyCol && Math.abs(row - emptyRow) === 1)
+      )
+    }
+
+    const isSolved = () => {
+      for (let i = 0; i < tiles.value.length - 1; i++) {
+        if (tiles.value[i] !== i + 1) {
+          return false
+        }
+      }
+      return true
+    }
+
+    onMounted(() => {
+      shuffle()
+    })
+
+    return {
+      tiles,
+      moves,
+      counter,
+      gameStarted,
+      time,
+      startGame,
+      shuffle,
+      moveTile,
+      Timer,
+      formatTime,
+    }
+  },
+}
 </script>
 
 <style scoped></style>
