@@ -30,37 +30,28 @@
   <div class="flex flex-col items-center mt-8">
     <h1 class="text-3xl font-bold mb-4">15 Puzzle Game</h1>
 
-    <button
-      v-if="!gameStarted"
-      @click="startGame"
-      class="bg-blue-500 text-white py-2 px-4 rounded"
-    >
+    <button v-if="!gameStarted" @click="startGame" class="bg-blue-500 text-white py-2 px-4 rounded">
       Start
     </button>
 
-    <div v-if="gameStarted" class="flex items-center mt-4">
-      <div class="mb-2 flex-none">Moves: {{ moves }}</div>
+    <div v-if="gameStarted" class="flex-cols items-center mt-4">
+<div class="flex">
+      <div class="mb-2 flex-1">Moves: {{ moves }}</div>
       <div class="mb-2 flex-1">Counter: {{ counter }}</div>
       <!-- เพิ่ม Time -->
-      <div class="mb-2 flex-1">Time: {{ formatTime(time) }}</div>
-
+      <div class="mb-2 flex-none">Time: {{ formatTime(time) }}</div>
+</div>
       <div class="grid grid-cols-4 gap-2">
-        <div
-          v-for="(tile, index) in tiles"
-          :key="index"
-          @click="moveTile(index)"
-          class="w-16 h-16 border border-gray-300 flex items-center justify-center text-2xl cursor-pointer bg-white"
-        >
+        <div v-for="(tile, index) in tiles" :key="index" @click="moveTile(index)"
+          class="w-16 h-16 border border-gray-300 flex items-center justify-center text-2xl cursor-pointer bg-white">
           {{ tile === 0 ? " " : tile }}
         </div>
       </div>
-
-      <button
-        @click="shuffle"
-        class="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
-      >
+      <div class="flex place-content-center">
+      <button @click="shuffle" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded">
         Shuffle
       </button>
+    </div>
     </div>
   </div>
 </template>
@@ -113,10 +104,10 @@ export default {
       while (currentIndex !== 0) {
         randomIndex = Math.floor(Math.random() * currentIndex)
         currentIndex--
-        ;[array[currentIndex], array[randomIndex]] = [
-          array[randomIndex],
-          array[currentIndex],
-        ]
+          ;[array[currentIndex], array[randomIndex]] = [
+            array[randomIndex],
+            array[currentIndex],
+          ]
       }
       return array
     }
@@ -126,10 +117,10 @@ export default {
       if (isValidMove(index, emptyIndex)) {
         moves.value++
         counter.value++
-        ;[tiles.value[index], tiles.value[emptyIndex]] = [
-          tiles.value[emptyIndex],
-          tiles.value[index],
-        ]
+          ;[tiles.value[index], tiles.value[emptyIndex]] = [
+            tiles.value[emptyIndex],
+            tiles.value[index],
+          ]
         if (isSolved()) {
           alert("Congratulations! Puzzle solved.")
           gameStarted.value = false
