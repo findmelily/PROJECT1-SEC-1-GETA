@@ -19,10 +19,13 @@
      @click="$emit('start-play',this.level)">START</button>
   </div>
   </div>
+  
 
 </template>
  
 <style scoped></style> -->
+
+<!-- App.vue -->
 <template>
   <div class="flex flex-col items-center mt-8">
     <h1 class="text-3xl font-bold mb-4">15 Puzzle Game</h1>
@@ -37,10 +40,11 @@
 
     <div v-if="gameStarted" class="flex flex-col items-center mt-4">
       <p class="mb-2">Moves: {{ moves }}</p>
-
+      <p class="mb-2">Counter: {{ counter }}</p>
+      <!-- เพิ่ม Time -->
       <p class="mb-4">Time: {{ formatTime(time) }}</p>
 
-      <!-- <div class="grid grid-cols-4 gap-2">
+      <div class="grid grid-cols-4 gap-2">
         <div
           v-for="(tile, index) in tiles"
           :key="index"
@@ -49,22 +53,7 @@
         >
           {{ tile === 0 ? " " : tile }}
         </div>
-      </div> -->
-      <div class="grid grid-cols-4 gap-2">
-        <div
-          v-for="(tile, index) in tiles"
-          :key="index"
-          @click="moveTile(index)"
-          :class="{
-            'w-16 h-16 border border-gray-300 flex items-center justify-center text-2xl cursor-pointer': true,
-            'bg-white': tile !== 0 && !isTileInCorrectPosition(index),
-            'bg-green-300': isTileInCorrectPosition(index)
-          }"
-        >
-          {{ tile === 0 ? " " : tile }}
-        </div>
       </div>
-
 
       <button
         @click="shuffle"
@@ -76,7 +65,6 @@
   </div>
 </template>
 
-
 <script>
 import { ref, onMounted } from "vue"
 
@@ -86,20 +74,24 @@ export default {
     const moves = ref(0)
     const counter = ref(0)
     const gameStarted = ref(false)
+    // เพิ่ม time
     const time = ref(0)
 
     const startGame = () => {
       gameStarted.value = true
       shuffle()
+      // เพิ่ม Timer function
       Timer()
     }
 
+    // เพิ่ม Timer function
     const Timer = () => {
       setInterval(() => {
         time.value++
       }, 1000)
     }
 
+    // เพิ่ม formatTime function
     const formatTime = (time) => {
       const hours = `0${Math.floor(time / 3600)}`.slice(-2)
       const minues = `0${Math.floor((time % 3600) / 60)}`.slice(-2)
@@ -111,6 +103,7 @@ export default {
       tiles.value = shuffleArray([...Array(16).keys()])
       moves.value = 0
       counter.value = 0
+      // เพิ่ม time value
       time.value = 0
     }
 
@@ -170,6 +163,7 @@ export default {
       shuffle()
     })
 
+    // เพิ่ม return time Timer formatTime
     return {
       tiles,
       moves,
