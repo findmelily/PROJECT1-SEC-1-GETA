@@ -30,44 +30,39 @@
   <div class="flex flex-col items-center mt-8">
     <h1 class="text-3xl font-bold mb-4">15 Puzzle Game</h1>
 
-    <button
-      v-if="!gameStarted"
-      @click="startGame"
-      class="bg-blue-500 text-white py-2 px-4 rounded"
-    >
+    <button v-if="!gameStarted" @click="startGame" class="bg-blue-500 text-white py-2 px-4 rounded">
       Start
     </button>
 
     <div v-if="gameStarted" class="flex flex-col items-center mt-4">
-      <p class="mb-2">Moves: {{ moves }}</p>
 
-      <p class="mb-4">Time: {{ formatTime(time) }}</p>
+      <div class="flex">
+        <div class="mb-2 m-2">Moves: {{ moves }}</div>
+        <div class="mb-2 m-2">Time: {{ formatTime(time) }}</div>
+      </div>
+      <div class="flex">
+        <div class="grid grid-cols-4 gap-2">
+          <div v-for="(tile, index) in tiles" :key="index" @click="moveTile(index)"
+            :class="tile === index + 1 ? correctTileStyle : normalTileStyle">
+            <!-- แก้ตรง class -->
+            {{ tile === 0 ? " " : tile }}
+          </div>
 
-      <div class="grid grid-cols-4 gap-2">
-        <div
-          v-for="(tile, index) in tiles"
-          :key="index"
-          @click="moveTile(index)"
-
-          :class="tile === index + 1 ? correctTileStyle : normalTileStyle"
-
-        >
-        <!-- แก้ตรง class -->
-          {{ tile === 0 ? " " : tile }}
         </div>
       </div>
-
-      <button
-        @click="shuffle"
-        class="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
-      >
-        Shuffle
-      </button>
+      <div class="flex-2">
+        <button @click="shuffle" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded">
+          Shuffle
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
-<script setup> // เปลี่ยนเป็น script setup
+
+<script setup>
+// เปลี่ยนเป็น script setup
+
 import { ref, onMounted } from "vue";
 // style ที่เพิ่มไป 
 const normalTileStyle = `w-16 h-16 border border-gray-300 flex items-center justify-center text-2xl cursor-pointer bg-white`;
