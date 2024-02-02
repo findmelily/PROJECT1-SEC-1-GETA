@@ -5,14 +5,13 @@
     <button
       v-if="!gameStarted"
       @click="startGame"
-      class="bg-blue-500 text-white py-2 px-4 rounded"
+      class="bg-green-500 text-white py-2 px-4 rounded"
     >
       Start
     </button>
 
     <div v-if="gameStarted" class="flex flex-col items-center mt-4">
-      <p class="mb-2">Moves: {{ moves }}</p>
-      <p class="mb-4">Counter: {{ counter }}</p>
+      <p class="mb-4">Moves: {{ moves }}</p>
 
       <div class="grid grid-cols-4 gap-2">
         <div
@@ -27,7 +26,7 @@
 
       <button
         @click="shuffle"
-        class="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
+        class="mt-4 bg-blue-400 text-white py-2 px-4 rounded"
       >
         Shuffle
       </button>
@@ -40,7 +39,6 @@ import { ref, onMounted } from "vue";
 
 const tiles = ref([]);
 const moves = ref(0);
-const counter = ref(0);
 const gameStarted = ref(false);
 
 const startGame = () => {
@@ -51,7 +49,6 @@ const startGame = () => {
 const shuffle = () => {
   tiles.value = shuffleArray([...Array(16).keys()]);
   moves.value = 0;
-  counter.value = 0;
 };
 
 const shuffleArray = (array) => {
@@ -73,13 +70,12 @@ const moveTile = (index) => {
   const emptyIndex = tiles.value.indexOf(0);
   if (isValidMove(index, emptyIndex)) {
     moves.value++;
-    counter.value++;
     [tiles.value[index], tiles.value[emptyIndex]] = [
       tiles.value[emptyIndex],
       tiles.value[index],
     ];
     if (isSolved()) {
-      alert("Congratulations! Puzzle solved.");
+      alert("Congratulations! ");
       gameStarted.value = false;
     }
   }
