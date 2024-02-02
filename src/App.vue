@@ -1,31 +1,3 @@
-<!-- <script setup>
- import { ref } from 'vue'
-
-</script>
- 
-<template>
-  <div class="text-center">
-  <-- <div>
-    <input type="radio" name="level" id="easy" value="1" v-model="level"/>
-    <label for="easy" class="me-4">Easy</label>
-    <input type="radio" name="level" id="medium" value="2" v-model="level" checked/>
-    <label for="medium" class="me-4">Medium</label>
-    <input type="radio" name="level" id="hard" value="3" v-model="level" />
-    <label for="hard" class="me-4">Hard</label>
-  </div> -->
-
-<!-- <div>
-    <button class="btn bg-green-600 text-white mt-3"
-     @click="$emit('start-play',this.level)">START</button>
-  </div>
-  </div>
-  
-
-</template>
- 
-<style scoped></style> -->
-
-<!-- App.vue -->
 <template>
   <div class="flex flex-col items-center mt-8">
     <h1 class="text-3xl font-bold mb-4">15 Puzzle Game</h1>
@@ -61,8 +33,6 @@
 
 
 <script setup>
-// เปลี่ยนเป็น script setup
-
 import { ref, onMounted } from "vue";
 // style ที่เพิ่มไป 
 const normalTileStyle = `w-16 h-16 border border-gray-300 flex items-center justify-center text-2xl cursor-pointer bg-white`;
