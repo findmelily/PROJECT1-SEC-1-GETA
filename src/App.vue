@@ -2,6 +2,7 @@
   <div class="flex flex-col items-center mt-8">
     <h1 class="text-3xl font-bold mb-4">15 Puzzle Game</h1>
 
+
     <!-- add click with sound effect -->
     <button
       v-if="!gameStarted"
@@ -13,16 +14,19 @@
       "
       class="bg-blue-500 text-white py-2 px-4 rounded"
     >
+
       Start
     </button>
 
     <div v-if="gameStarted" class="flex flex-col items-center mt-4">
+
       <div class="flex">
         <div class="mb-2 m-2">Moves: {{ moves }}</div>
         <div class="mb-2 m-2">Time: {{ formatTime(time) }}</div>
       </div>
       <div class="flex">
         <div class="grid grid-cols-4 gap-2">
+
           <!-- add click with sound effect -->
           <div
             v-for="(tile, index) in tiles"
@@ -53,10 +57,16 @@
         >
           Shuffle
         </button>
+
+        <button @click="restart" class="m-2 bg-blue-500 text-white py-2 px-4 rounded">
+          Restart
+        </button>
+
       </div>
     </div>
   </div>
 </template>
+
 
 <script setup>
 // เปลี่ยนเป็น script setup
@@ -65,6 +75,7 @@ import { ref, onMounted } from "vue"
 import shuffleSound from "./assets/sound1.mp3"
 import moveSound from "./assets/sound2.mp3"
 import defaultSound from "./assets/sound3.mp3"
+
 
 // style ที่เพิ่มไป
 const normalTileStyle = `w-16 h-16 border border-gray-300 flex items-center justify-center text-2xl cursor-pointer bg-white`
@@ -175,8 +186,16 @@ const isSolved = () => {
 }
 
 onMounted(() => {
+
   shuffle()
 })
+
+
+const restart = () => {
+  gameStarted.value = false; 
+};
+
+
 </script>
 
 <style scoped></style>
