@@ -23,8 +23,11 @@
         </div>
       </div>
       <div class="flex-2">
-        <button @click="shuffle" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded">
+        <button @click="shuffle" class="m-2 bg-blue-500 text-white py-2 px-4 rounded">
           Shuffle
+        </button>
+        <button @click="restart" class="m-2 bg-blue-500 text-white py-2 px-4 rounded">
+          Restart
         </button>
       </div>
     </div>
@@ -126,6 +129,11 @@ const isSolved = () => {
 onMounted(() => {
   shuffle();
 });
+
+const restart = () => {
+  gameStarted.value = false; 
+};
+
 </script>
 
 <style scoped></style>
