@@ -52,11 +52,12 @@
         >
           Shuffle
         </button>
+        <!-- add button to complete the game (โกง)-->
         <button
           @click="isComplete"
           class="mt-4 bg-green-500 text-white py-2 px-4 rounded"
         >
-          Complete
+          Complete (โกง)
         </button>
       </div>
     </div>
@@ -101,7 +102,6 @@ const playMoveSound = () => {
 
 const playbackgroudSound = () => {
   sound3.play();
-  // sound3.volume = 0.1;
   sound3.loop = true;
 };
 
@@ -179,6 +179,7 @@ const isSolved = () => {
   return true;
 };
 
+// function to complete the game (โกง)
 const isComplete = () => {
   tiles.value.sort((a, b) => a - b);
   const emptyIndex = tiles.value.indexOf(0);
