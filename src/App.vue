@@ -2,7 +2,19 @@
   <div class="flex flex-col items-center mt-8">
     <h1 class="text-3xl font-bold mb-4">15 Puzzle Game</h1>
 
-    <button v-if="!gameStarted" @click="startGame" class="bg-blue-500 text-white py-2 px-4 rounded">
+
+    <!-- add click with sound effect -->
+    <button
+      v-if="!gameStarted"
+      @click="
+        () => {
+          startGame()
+          playDefaultSound()
+        }
+      "
+      class="bg-blue-500 text-white py-2 px-4 rounded"
+    >
+
       Start
     </button>
 
@@ -14,21 +26,42 @@
       </div>
       <div class="flex">
         <div class="grid grid-cols-4 gap-2">
-          <div v-for="(tile, index) in tiles" :key="index" @click="moveTile(index)"
-            :class="tile === index + 1 ? correctTileStyle : normalTileStyle">
+
+          <!-- add click with sound effect -->
+          <div
+            v-for="(tile, index) in tiles"
+            :key="index"
+            @click="
+              () => {
+                moveTile(index)
+                playMoveSound()
+              }
+            "
+            :class="tile === index + 1 ? correctTileStyle : normalTileStyle"
+          >
             <!-- แก้ตรง class -->
             {{ tile === 0 ? " " : tile }}
           </div>
-
         </div>
       </div>
       <div class="flex-2">
-        <button @click="shuffle" class="m-2 bg-blue-500 text-white py-2 px-4 rounded">
+        <!-- add click with sound effect -->
+        <button
+          @click="
+            () => {
+              shuffle()
+              playShuffleSound()
+            }
+          "
+          class="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
+        >
           Shuffle
         </button>
+
         <button @click="restart" class="m-2 bg-blue-500 text-white py-2 px-4 rounded">
           Restart
         </button>
+
       </div>
     </div>
   </div>
@@ -36,103 +69,132 @@
 
 
 <script setup>
-import { ref, onMounted } from "vue";
-// style ที่เพิ่มไป 
-const normalTileStyle = `w-16 h-16 border border-gray-300 flex items-center justify-center text-2xl cursor-pointer bg-white`;
-const correctTileStyle = `w-16 h-16 border border-green-500 flex items-center justify-center text-2xl cursor-pointer bg-white text-green-500`;
+// เปลี่ยนเป็น script setup
 
-const tiles = ref([]);
-const moves = ref(0);
-const gameStarted = ref(false);
-const time = ref(0);
+import { ref, onMounted } from "vue"
+import shuffleSound from "./assets/sound1.mp3"
+import moveSound from "./assets/sound2.mp3"
+import defaultSound from "./assets/sound3.mp3"
+
+
+// style ที่เพิ่มไป
+const normalTileStyle = `w-16 h-16 border border-gray-300 flex items-center justify-center text-2xl cursor-pointer bg-white`
+const correctTileStyle = `w-16 h-16 border border-green-500 flex items-center justify-center text-2xl cursor-pointer bg-white text-green-500`
+
+const tiles = ref([])
+const moves = ref(0)
+const gameStarted = ref(false)
+const time = ref(0)
+
+//all sounds
+const sound1 = new Audio(shuffleSound)
+const sound2 = new Audio(moveSound)
+const sound3 = new Audio(defaultSound)
 
 const startGame = () => {
-  gameStarted.value = true;
-  shuffle();
-  Timer();
-};
+  gameStarted.value = true
+  shuffle()
+  Timer()
+}
+
+//playing sounds' functions
+const playShuffleSound = () => {
+  sound1.play()
+}
+
+const playMoveSound = () => {
+  sound2.play()
+}
+
+const playDefaultSound = () => {
+  sound3.play()
+  sound3.loop = true
+}
 
 const Timer = () => {
   setInterval(() => {
-    time.value++;
-  }, 1000);
-};
+    time.value++
+  }, 1000)
+}
 
 const formatTime = (time) => {
-  const hours = `0${Math.floor(time / 3600)}`.slice(-2);
-  const minutes = `0${Math.floor((time % 3600) / 60)}`.slice(-2);
-  const seconds = `0${time % 60}`.slice(-2);
-  return `${hours}:${minutes}:${seconds}`;
-};
+  const hours = `0${Math.floor(time / 3600)}`.slice(-2)
+  const minutes = `0${Math.floor((time % 3600) / 60)}`.slice(-2)
+  const seconds = `0${time % 60}`.slice(-2)
+  return `${hours}:${minutes}:${seconds}`
+}
 
 const shuffle = () => {
-  tiles.value = shuffleArray([...Array(16).keys()]);
-  moves.value = 0;
-  time.value = 0;
-};
+  tiles.value = shuffleArray([...Array(16).keys()])
+  moves.value = 0
+  time.value = 0
+}
 
 const shuffleArray = (array) => {
   let currentIndex = array.length,
-    randomIndex;
+    randomIndex
   while (currentIndex !== 0) {
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex--;
-    [array[currentIndex], array[randomIndex]] = [
+    randomIndex = Math.floor(Math.random() * currentIndex)
+    currentIndex--
+    ;[array[currentIndex], array[randomIndex]] = [
       array[randomIndex],
       array[currentIndex],
-    ];
+    ]
   }
-  return array;
-};
+  return array
+}
 
 const moveTile = (index) => {
-  const emptyIndex = tiles.value.indexOf(0);
+  const emptyIndex = tiles.value.indexOf(0)
   if (isValidMove(index, emptyIndex)) {
-    moves.value++;
-    [tiles.value[index], tiles.value[emptyIndex]] = [
+    moves.value++
+    ;[tiles.value[index], tiles.value[emptyIndex]] = [
       tiles.value[emptyIndex],
       tiles.value[index],
-    ];
+    ]
     if (isSolved()) {
-      alert("Congratulations");
-      gameStarted.value = false;
+      alert("Congratulations")
+      gameStarted.value = false
     }
   }
-};
+}
 
 const isValidMove = (index, emptyIndex) => {
-  const row = Math.floor(index / 4);
-  const col = index % 4;
+  const row = Math.floor(index / 4)
+  const col = index % 4
 
-  const emptyRow = Math.floor(emptyIndex / 4);
-  const emptyCol = emptyIndex % 4;
+  const emptyRow = Math.floor(emptyIndex / 4)
+  const emptyCol = emptyIndex % 4
 
   return (
     (row === emptyRow && Math.abs(col - emptyCol) === 1) ||
     (col === emptyCol && Math.abs(row - emptyRow) === 1)
-  );
-};
+  )
+}
 
 const isTileInCorrectPosition = (index) => {
-  return tiles.value[index] === index + 1;
-};
+  return tiles.value[index] === index + 1
+}
 
 const isSolved = () => {
   for (let i = 0; i < tiles.value.length - 1; i++) {
     if (tiles.value[i] !== i + 1) {
-      return false;
+      return false
     }
   }
-  return true;
-};
+  return true
+}
 
 onMounted(() => {
-  shuffle();
-});
+
+  shuffle()
+})
+
 
 const restart = () => {
   gameStarted.value = false; 
 };
+
 
 </script>
 
