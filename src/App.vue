@@ -78,18 +78,15 @@ import moveSound from "./assets/sound2.mp3";
 import backgroudSound from "./assets/sound3.mp3";
 
 
-// style ที่เพิ่มไป
 const normalTileStyle = `w-16 h-16 border border-gray-300 flex items-center justify-center text-2xl cursor-pointer bg-white`;
 const correctTileStyle = `w-16 h-16 border border-green-500 flex items-center justify-center text-2xl cursor-pointer bg-white text-green-500`;
+
 
 const difficultyLevels = {
   easy: { size: 4 },
   medium: { size: 5 },
   hard: { size: 6 }
 };
-
-const normalTileStyle = `w-16 h-16 border border-gray-300 flex items-center justify-center text-2xl cursor-pointer bg-white`;
-const correctTileStyle = `w-16 h-16 border border-green-500 flex items-center justify-center text-2xl cursor-pointer bg-white text-green-500`;
 
 const tiles = ref([]);
 const moves = ref(0);
@@ -125,18 +122,7 @@ const playbackgroudSound = () => {
   sound3.loop = true;
 };
 
-const Timer = () => {
-  setInterval(() => {
-    time.value++;
-  }, 1000);
-};
 
-const formatTime = (time) => {
-  const hours = `0${Math.floor(time / 3600)}`.slice(-2);
-  const minutes = `0${Math.floor((time % 3600) / 60)}`.slice(-2);
-  const seconds = `0${time % 60}`.slice(-2);
-  return `${hours}:${minutes}:${seconds}`;
-};
 
 const initializeGame = () => {
   const totalTiles = gridSize * gridSize;
