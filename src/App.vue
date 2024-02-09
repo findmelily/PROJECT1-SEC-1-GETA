@@ -65,7 +65,6 @@
 
 <script setup>
 // เปลี่ยนเป็น script setup
-
 import { ref, onMounted } from "vue";
 import shuffleSound from "./assets/sound1.mp3";
 import moveSound from "./assets/sound2.mp3";
