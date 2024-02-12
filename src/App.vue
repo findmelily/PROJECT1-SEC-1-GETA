@@ -3,6 +3,7 @@
     <div class="flex flex-col items-center mt-8">
       <h1 class="text-3xl font-bold mb-4">15 Puzzle Game</h1>
 
+
       <div v-if="!gameStarted" class="mb-4" @click="playbackgroudSound()">
         <button
           @click="startGame('easy')"
@@ -51,7 +52,7 @@
           <button
             @click="
               () => {
-                shuffle();
+                shuffle()
                 playShuffleSound()
               }
             "
@@ -79,11 +80,14 @@
 </template>
 
 <script setup>
+
+// เปลี่ยนเป็น script setup
 import { ref, onMounted } from "vue"
 import shuffleSound from "./assets/sound1.mp3"
 import moveSound from "./assets/sound2.mp3"
 import backgroudSound from "./assets/sound3.mp3"
 
+// เพิ่มประกาศตัวแปร timerInterval
 let timerInterval = null
 
 const normalTileStyle = `w-16 h-16 border border-gray-300 flex items-center justify-center text-2xl cursor-pointer bg-white`
@@ -95,12 +99,14 @@ const difficultyLevels = {
   hard: { size: 6 },
 }
 
+
 const tiles = ref([])
 const moves = ref(0)
 const gameStarted = ref(false)
 const time = ref(0)
-let gridSize = 4
+let gridSize = 4 // Default grid size
 
+//all sounds
 const sound1 = new Audio(shuffleSound)
 const sound2 = new Audio(moveSound)
 const sound3 = new Audio(backgroudSound)
@@ -108,6 +114,8 @@ const sound3 = new Audio(backgroudSound)
 const startGame = (difficulty) => {
   gameStarted.value = true
   gridSize = difficultyLevels[difficulty].size
+
+  // เพิ่มยกเลิก setInterval เก่า
   clearInterval(timerInterval)
   time.value = 0
   initializeGame()
@@ -130,10 +138,11 @@ const playbackgroudSound = () => {
 
 const initializeGame = () => {
   const totalTiles = gridSize * gridSize
-  const tilesArray = [...Array(totalTiles).keys()].slice(1)
-  tilesArray.push(0)
+  const tilesArray = [...Array(totalTiles).keys()].slice(1) // Generate numbers from 1 to totalTiles - 1
+  tilesArray.push(0) // Add the empty tile
   do {
-    tilesArray.sort(() => Math.random() -0.5)
+    tilesArray.sort(() => Math.random() - 0.5) // Shuffle the tiles
+]]
   } while (!isSolvable(tilesArray))
   tiles.value = tilesArray
   moves.value = 0
@@ -141,6 +150,9 @@ const initializeGame = () => {
 }
 
 const Timer = () => {
+
+  //เพิ่มตัวแปร timerInterval
+
   timerInterval = setInterval(() => {
     time.value++
   }, 1000)
@@ -155,10 +167,12 @@ const formatTime = (time) => {
 
 const shuffle = () => {
   const totalTiles = gridSize * gridSize
-  const tilesArray = [...Array(totalTiles).keys()].slice(1)
-  tilesArray.push(0)
+
+  const tilesArray = [...Array(totalTiles).keys()].slice(1) // Generate numbers from 1 to totalTiles - 1
+  tilesArray.push(0) // Add the empty tile
   do {
-    tilesArray.sort(() => Math.random()- 0.5)
+    tilesArray.sort(() => Math.random() - 0.5) // Shuffle the tiles
+
   } while (!isSolvable(tilesArray))
   tiles.value = tilesArray
   moves.value = 0
@@ -169,8 +183,10 @@ const moveTile = (index) => {
   const emptyIndex = tiles.value.indexOf(0)
   if (isValidMove(index, emptyIndex)) {
     moves.value++
+
       [tiles.value[index], tiles.value[emptyIndex]] = 
       [tiles.value[emptyIndex],tiles.value[index]]
+
     if (isSolved()) {
       alert("Congratulations")
       gameStarted.value = false
@@ -188,6 +204,16 @@ const isValidMove = (index, emptyIndex) => {
     (col === emptyCol && Math.abs(row - emptyRow) === 1)
   )
 }
+
+
+const isTileInCorrectPosition = (index) => {
+  return tiles.value[index] === index + 1
+}
+
+// const isTileInCorrectPosition = (index) => {
+//   return tiles.value[index] === index + 1;
+// };
+
 
 const isSolved = () => {
   for (let i = 0; i < tiles.value.length - 1; i++) {
@@ -236,15 +262,20 @@ onMounted(() => {
 
 const restart = () => {
   gameStarted.value = false
+
+  // ยกเลิก setInterval เก่า
+
   clearInterval(timerInterval)
   time.value = 0
 }
 </script>
 
 <style scoped>
+
  .game-container {
   font-family: 'MN Pu Khem', 'sans-serif';
 } 
+
 .grid {
   display: grid;
   gap: 2px;
