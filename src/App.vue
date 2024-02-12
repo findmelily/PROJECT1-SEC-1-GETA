@@ -81,9 +81,9 @@
 <script setup>
 // เปลี่ยนเป็น script setup
 import { ref, onMounted } from "vue";
-import shuffleSound from "./assets/sound1.mp3";
-import moveSound from "./assets/sound2.mp3";
-import backgroudSound from "./assets/sound3.mp3";
+import shuffleSound from "./assets/sounds/sound1.mp3";
+import moveSound from "./assets/sounds/sound2.mp3";
+import backgroudSound from "./assets/sounds/sound3.mp3";
 
 // เพิ่มประกาศตัวแปร timerInterval
 let timerInterval = null;
