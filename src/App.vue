@@ -57,7 +57,7 @@
             "
             class="m-2 mt-4 bg-blue-500 text-white py-2 px-4 rounded"
           >
-            Shuffle
+            <img src="./components/shuffle-icon.png" alt="shuffle" />
           </button>
           <!-- add button to complete the game (โกง)-->
           <button
@@ -70,7 +70,7 @@
             @click="home"
             class="m-2 mt-4 bg-blue-500 text-white py-2 px-4 rounded"
           >
-            Home
+            <img src="./components/home-icon.png" alt="home" />
           </button>
         </div>
       </div>
@@ -288,5 +288,11 @@ const home = () => {
 
 .grid-cols-6 {
   grid-template-columns: repeat(6, 1fr);
+}
+
+img {
+  border-radius: 4px;
+  padding: 3px;
+  width: 30px;
 }
 </style>
