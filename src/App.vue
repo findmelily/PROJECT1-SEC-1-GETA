@@ -265,8 +265,14 @@ const restart = () => {
 </script>
 
 <style scoped>
-.game-container {
-  font-family: "MN Pu Khem", "sans-serif";
+
+@font-face {
+  font-family: "MNPuKhem"; 
+  src: url("./assets/fonts/MNPuKhem.ttf");
+}
+
+body {
+  font-family: "MNPuKhem", "sans-serif";
 }
 
 .grid {
