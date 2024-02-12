@@ -1,9 +1,9 @@
 <template>
   <div class="game-container">
-    <div class="flex flex-col items-center mt-8">
-      <h1 class="text-3xl font-bold mb-4">15 Puzzle Game</h1>
+    <div class="flex flex-col items-center py-10">
+      <h1 class="text-3xl text-white font-bold mb-4">15 Puzzle Game</h1>
 
-      <div class="mb-4" @click="playbackgroudSound()">
+      <div v-if="!gameStarted" class="mb-4" @click="playbackgroudSound()">
         <button
           @click="startGame('easy')"
           class="bg-blue-500 text-white py-2 px-4 rounded mr-2"
@@ -26,8 +26,8 @@
 
       <div v-if="gameStarted" class="flex flex-col items-center mt-4">
         <div class="flex">
-          <div class="mb-2 m-2">Moves: {{ moves }}</div>
-          <div class="mb-2 m-2">Time: {{ formatTime(time) }}</div>
+          <div class="mb-2 m-2 text-white">Moves: {{ moves }}</div>
+          <div class="mb-2 m-2 text-white">Time: {{ formatTime(time) }}</div>
         </div>
         <div class="flex">
           <div class="grid" :class="'grid-cols-' + gridSize + ' gap-2'">
@@ -67,10 +67,10 @@
             Complete (โกง)
           </button>
           <button
-            @click="restart"
+            @click="home"
             class="m-2 mt-4 bg-blue-500 text-white py-2 px-4 rounded"
           >
-            Restart
+            Home
           </button>
         </div>
       </div>
@@ -81,9 +81,9 @@
 <script setup>
 // เปลี่ยนเป็น script setup
 import { ref, onMounted } from "vue"
-import shuffleSound from "./assets/sound1.mp3"
-import moveSound from "./assets/sound2.mp3"
-import backgroudSound from "./assets/sound3.mp3"
+import shuffleSound from "./assets/sounds/sound1.mp3"
+import moveSound from "./assets/sounds/sound2.mp3"
+import backgroudSound from "./assets/sounds/sound3.mp3"
 
 // เพิ่มประกาศตัวแปร timerInterval
 let timerInterval = null
@@ -115,13 +115,11 @@ const startGame = (difficulty) => {
   // เพิ่มยกเลิก setInterval เก่า
   clearInterval(timerInterval)
   time.value = 0
-
   initializeGame()
   shuffle()
   Timer()
 }
 
-//playing sounds' functions
 const playShuffleSound = () => {
   sound1.play()
 }
@@ -149,6 +147,7 @@ const initializeGame = () => {
 
 const Timer = () => {
   //เพิ่มตัวแปร timerInterval
+
   timerInterval = setInterval(() => {
     time.value++
   }, 1000)
@@ -163,6 +162,7 @@ const formatTime = (time) => {
 
 const shuffle = () => {
   const totalTiles = gridSize * gridSize
+
   const tilesArray = [...Array(totalTiles).keys()].slice(1) // Generate numbers from 1 to totalTiles - 1
   tilesArray.push(0) // Add the empty tile
   do {
@@ -181,6 +181,7 @@ const moveTile = (index) => {
       tiles.value[emptyIndex],
       tiles.value[index],
     ]
+
     if (isSolved()) {
       alert("Congratulations")
       gameStarted.value = false
@@ -191,10 +192,8 @@ const moveTile = (index) => {
 const isValidMove = (index, emptyIndex) => {
   const row = Math.floor(index / gridSize)
   const col = index % gridSize
-
   const emptyRow = Math.floor(emptyIndex / gridSize)
   const emptyCol = emptyIndex % gridSize
-
   return (
     (row === emptyRow && Math.abs(col - emptyCol) === 1) ||
     (col === emptyCol && Math.abs(row - emptyRow) === 1)
@@ -215,11 +214,9 @@ const isSolved = () => {
       return false
     }
   }
-
   return true
 }
 
-// Check if the puzzle is solvable
 const isSolvable = (tilesArray) => {
   let inversions = 0
   const length = tilesArray.length
@@ -242,7 +239,6 @@ const isSolvable = (tilesArray) => {
   )
 }
 
-// function to complete the game (โกง)
 const isComplete = () => {
   tiles.value.sort((a, b) => a - b)
   const emptyIndex = tiles.value.indexOf(0)
@@ -257,20 +253,26 @@ onMounted(() => {
   Timer()
 })
 
-const restart = () => {
+const home = () => {
   gameStarted.value = false
+
   // ยกเลิก setInterval เก่า
+
   clearInterval(timerInterval)
   time.value = 0
 }
 </script>
 
 <style scoped>
-/* .game-container {
-  background-image: url(................................); 
+.game-container {
+  font-family: "MN Pu Khem", "sans-serif";
+  height: 100vh;
+  background-image: url("@/components/bgspace.png");
+  background: cover;
   background-size: cover;
-  background-position: center;
-} */
+  background-repeat: no-repeat;
+}
+
 .grid {
   display: grid;
   gap: 2px;
