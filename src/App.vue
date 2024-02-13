@@ -1,7 +1,7 @@
 <template>
   <div class="game-container">
-    <div class="flex flex-col items-center mt-8">
-      <h1 class="text-3xl font-bold mb-4">15 Puzzle Game</h1>
+    <div class="flex flex-col items-center py-10">
+      <h1 class="text-3xl text-white font-bold mb-4">15 Puzzle Game</h1>
 
       <div v-if="!gameStarted" class="mb-4" @click="playbackgroudSound()">
         <button
@@ -26,8 +26,8 @@
 
       <div v-if="gameStarted" class="flex flex-col items-center mt-4">
         <div class="flex">
-          <div class="mb-2 m-2">Moves: {{ moves }}</div>
-          <div class="mb-2 m-2">Time: {{ formatTime(time) }}</div>
+          <div class="mb-2 m-2 text-white">Moves: {{ moves }}</div>
+          <div class="mb-2 m-2 text-white">Time: {{ formatTime(time) }}</div>
         </div>
         <div class="flex">
           <div class="grid" :class="'grid-cols-' + gridSize + ' gap-2'">
@@ -57,7 +57,7 @@
             "
             class="m-2 mt-4 bg-blue-500 text-white py-2 px-4 rounded"
           >
-            Shuffle
+            <img src="./components/shuffle-icon.png" alt="shuffle" />
           </button>
           <!-- add button to complete the game (โกง)-->
           <button
@@ -67,10 +67,10 @@
             Complete (โกง)
           </button>
           <button
-            @click="restart"
+            @click="home"
             class="m-2 mt-4 bg-blue-500 text-white py-2 px-4 rounded"
           >
-            Restart
+            <img src="./components/home-icon.png" alt="home" />
           </button>
         </div>
       </div>
@@ -80,10 +80,12 @@
 
 <script setup>
 // เปลี่ยนเป็น script setup
-import { ref, onMounted } from "vue";
-import shuffleSound from "./assets/sounds/sound1.mp3";
-import moveSound from "./assets/sounds/sound2.mp3";
-import backgroudSound from "./assets/sounds/sound3.mp3";
+
+import { ref, onMounted } from "vue"
+import shuffleSound from "./assets/sounds/sound1.mp3"
+import moveSound from "./assets/sounds/sound2.mp3"
+import backgroudSound from "./assets/sounds/sound3.mp3"
+
 
 // เพิ่มประกาศตัวแปร timerInterval
 let timerInterval = null;
@@ -113,12 +115,14 @@ const startGame = (difficulty) => {
   gridSize = difficultyLevels[difficulty].size;
 
   // เพิ่มยกเลิก setInterval เก่า
-  clearInterval(timerInterval);
-  time.value = 0;
-  initializeGame();
-  shuffle();
-  Timer();
-};
+
+  clearInterval(timerInterval)
+  time.value = 0
+  initializeGame()
+  shuffle()
+  Timer()
+}
+
 
 const playShuffleSound = () => {
   sound1.play();
@@ -161,10 +165,12 @@ const formatTime = (time) => {
 };
 
 const shuffle = () => {
-  const totalTiles = gridSize * gridSize;
 
-  const tilesArray = [...Array(totalTiles).keys()].slice(1); // Generate numbers from 1 to totalTiles - 1
-  tilesArray.push(0); // Add the empty tile
+  const totalTiles = gridSize * gridSize
+
+  const tilesArray = [...Array(totalTiles).keys()].slice(1) // Generate numbers from 1 to totalTiles - 1
+  tilesArray.push(0) // Add the empty tile
+
   do {
     tilesArray.sort(() => Math.random() - 0.5); // Shuffle the tiles
   } while (!isSolvable(tilesArray));
@@ -181,7 +187,9 @@ const moveTile = (index) => {
     [tiles.value[index], tiles.value[emptyIndex]] = [
       tiles.value[emptyIndex],
       tiles.value[index],
+
     ];
+
 
     if (isSolved()) {
       alert("Congratulations");
@@ -191,10 +199,12 @@ const moveTile = (index) => {
 };
 
 const isValidMove = (index, emptyIndex) => {
+
   const row = Math.floor(index / gridSize);
   const col = index % gridSize;
   const emptyRow = Math.floor(emptyIndex / gridSize);
   const emptyCol = emptyIndex % gridSize;
+
   return (
     (row === emptyRow && Math.abs(col - emptyCol) === 1) ||
     (col === emptyCol && Math.abs(row - emptyRow) === 1)
@@ -215,8 +225,10 @@ const isSolved = () => {
       return false;
     }
   }
+
   return true;
 };
+
 
 const isSolvable = (tilesArray) => {
   let inversions = 0;
@@ -254,15 +266,20 @@ onMounted(() => {
   Timer();
 });
 
-const restart = () => {
-  gameStarted.value = false;
+
+const home = () => {
+  gameStarted.value = false
 
   // ยกเลิก setInterval เก่า
 
-  clearInterval(timerInterval);
-  time.value = 0;
-};
+  clearInterval(timerInterval)
+  time.value = 0
+}
 </script>
+
+
+
+
 
 <style scoped>
 
@@ -273,6 +290,15 @@ const restart = () => {
 
 body {
   font-family: "MNPuKhem", "sans-serif";
+  
+  .game-container {
+  font-family: "MN Pu Khem", "sans-serif";
+  height: 100vh;
+  background-image: url("@/components/bgspace.png");
+  background: cover;
+  background-size: cover;
+  background-repeat: no-repeat;
+
 }
 
 .grid {
@@ -290,5 +316,11 @@ body {
 
 .grid-cols-6 {
   grid-template-columns: repeat(6, 1fr);
+}
+
+img {
+  border-radius: 4px;
+  padding: 3px;
+  width: 30px;
 }
 </style>
