@@ -81,11 +81,10 @@
 <script setup>
 // เปลี่ยนเป็น script setup
 
-import { ref, onMounted } from "vue"
-import shuffleSound from "./assets/sounds/sound1.mp3"
-import moveSound from "./assets/sounds/sound2.mp3"
-import backgroudSound from "./assets/sounds/sound3.mp3"
-
+import { ref, onMounted } from "vue";
+import shuffleSound from "./assets/sounds/sound1.mp3";
+import moveSound from "./assets/sounds/sound2.mp3";
+import backgroudSound from "./assets/sounds/sound3.mp3";
 
 // เพิ่มประกาศตัวแปร timerInterval
 let timerInterval = null;
@@ -116,13 +115,12 @@ const startGame = (difficulty) => {
 
   // เพิ่มยกเลิก setInterval เก่า
 
-  clearInterval(timerInterval)
-  time.value = 0
-  initializeGame()
-  shuffle()
-  Timer()
-}
-
+  clearInterval(timerInterval);
+  time.value = 0;
+  initializeGame();
+  shuffle();
+  Timer();
+};
 
 const playShuffleSound = () => {
   sound1.play();
@@ -165,11 +163,10 @@ const formatTime = (time) => {
 };
 
 const shuffle = () => {
+  const totalTiles = gridSize * gridSize;
 
-  const totalTiles = gridSize * gridSize
-
-  const tilesArray = [...Array(totalTiles).keys()].slice(1) // Generate numbers from 1 to totalTiles - 1
-  tilesArray.push(0) // Add the empty tile
+  const tilesArray = [...Array(totalTiles).keys()].slice(1); // Generate numbers from 1 to totalTiles - 1
+  tilesArray.push(0); // Add the empty tile
 
   do {
     tilesArray.sort(() => Math.random() - 0.5); // Shuffle the tiles
@@ -187,9 +184,7 @@ const moveTile = (index) => {
     [tiles.value[index], tiles.value[emptyIndex]] = [
       tiles.value[emptyIndex],
       tiles.value[index],
-
     ];
-
 
     if (isSolved()) {
       alert("Congratulations");
@@ -199,7 +194,6 @@ const moveTile = (index) => {
 };
 
 const isValidMove = (index, emptyIndex) => {
-
   const row = Math.floor(index / gridSize);
   const col = index % gridSize;
   const emptyRow = Math.floor(emptyIndex / gridSize);
@@ -228,7 +222,6 @@ const isSolved = () => {
 
   return true;
 };
-
 
 const isSolvable = (tilesArray) => {
   let inversions = 0;
@@ -266,39 +259,32 @@ onMounted(() => {
   Timer();
 });
 
-
 const home = () => {
-  gameStarted.value = false
+  gameStarted.value = false;
 
   // ยกเลิก setInterval เก่า
 
-  clearInterval(timerInterval)
-  time.value = 0
-}
+  clearInterval(timerInterval);
+  time.value = 0;
+};
 </script>
 
-
-
-
-
 <style scoped>
-
 @font-face {
-  font-family: "MNPuKhem"; 
+  font-family: "MNPuKhem";
   src: url("./assets/fonts/MNPuKhem.ttf");
 }
 
 body {
   font-family: "MNPuKhem", "sans-serif";
-  
-  .game-container {
-  font-family: "MN Pu Khem", "sans-serif";
+}
+
+.game-container {
   height: 100vh;
   background-image: url("@/components/bgspace.png");
   background: cover;
   background-size: cover;
   background-repeat: no-repeat;
-
 }
 
 .grid {
