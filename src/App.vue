@@ -108,6 +108,7 @@ let gridSize = 4; // Default grid size
 const sound1 = new Audio(shuffleSound);
 const sound2 = new Audio(moveSound);
 const sound3 = new Audio(backgroudSound);
+const test  = "abc";
 
 const startGame = (difficulty) => {
   gameStarted.value = true;
