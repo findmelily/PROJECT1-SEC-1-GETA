@@ -48,6 +48,7 @@
         </div>
         <div class="flex-2">
           <!-- add click with sound effect -->
+
           <button
             @click="
               () => {
@@ -70,6 +71,7 @@
             @click="home"
             class="m-2 mt-4 bg-blue-500 text-white py-2 px-4 rounded"
           >
+
             <img src="./components/home-icon.png" alt="home" />
           </button>
         </div>
@@ -108,7 +110,7 @@ let gridSize = 4; // Default grid size
 const sound1 = new Audio(shuffleSound);
 const sound2 = new Audio(moveSound);
 const sound3 = new Audio(backgroudSound);
-const test  = "abc";
+
 
 const startGame = (difficulty) => {
   gameStarted.value = true;
@@ -188,8 +190,10 @@ const moveTile = (index) => {
     ];
 
     if (isSolved()) {
-      alert("Congratulations");
-      gameStarted.value = false;
+      setTimeout(function () {
+        alert("Congratulations");
+        gameStarted.value = false;
+      }, 1000);
     }
   }
 };
