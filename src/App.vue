@@ -4,13 +4,22 @@
       <h1 class="text-3xl text-white font-bold mb-4">15 Puzzle Game</h1>
 
       <div v-if="!gameStarted" class="mb-4" @click="playbackgroudSound()">
-        <button @click="startGame('easy')" class="bg-blue-500 text-white py-2 px-4 rounded mr-2">
+        <button
+          @click="startGame('easy')"
+          class="bg-blue-500 text-white py-2 px-4 rounded mr-2"
+        >
           Easy
         </button>
-        <button @click="startGame('medium')" class="bg-blue-500 text-white py-2 px-4 rounded mr-2">
+        <button
+          @click="startGame('medium')"
+          class="bg-blue-500 text-white py-2 px-4 rounded mr-2"
+        >
           Medium
         </button>
-        <button @click="startGame('hard')" class="bg-blue-500 text-white py-2 px-4 rounded">
+        <button
+          @click="startGame('hard')"
+          class="bg-blue-500 text-white py-2 px-4 rounded"
+        >
           Hard
         </button>
       </div>
@@ -22,29 +31,47 @@
         </div>
         <div class="flex">
           <div class="grid" :class="'grid-cols-' + gridSize + ' gap-2'">
-            <div v-for="(tile, index) in tiles" :key="index" @click="() => {
-                moveTile(index);
-                playMoveSound();
-              }
-              " :class="tile === index + 1 ? correctTileStyle : normalTileStyle">
+            <div
+              v-for="(tile, index) in tiles"
+              :key="index"
+              @click="
+                () => {
+                  moveTile(index);
+                  playMoveSound();
+                }
+              "
+              :class="tile === index + 1 ? correctTileStyle : normalTileStyle"
+            >
               {{ tile === 0 ? "" : tile }}
             </div>
           </div>
         </div>
         <div class="flex-2">
           <!-- add click with sound effect -->
-          <button @click="() => {
-              shuffle();
-              playShuffleSound();
-            }
-            " class="m-2 mt-4 bg-blue-500 text-white py-2 px-4 rounded">
+
+          <button
+            @click="
+              () => {
+                shuffle();
+                playShuffleSound();
+              }
+            "
+            class="m-2 mt-4 bg-blue-500 text-white py-2 px-4 rounded"
+          >
             <img src="./components/shuffle-icon.png" alt="shuffle" />
           </button>
           <!-- add button to complete the game (โกง)-->
-          <button @click="isComplete" class="m-2 mt-4 bg-green-500 text-white py-2 px-4 rounded">
+          <button
+            @click="isComplete"
+            class="m-2 mt-4 bg-green-500 text-white py-2 px-4 rounded"
+          >
             Complete (โกง)
           </button>
-          <button @click="home" class="m-2 mt-4 bg-blue-500 text-white py-2 px-4 rounded">
+          <button
+            @click="home"
+            class="m-2 mt-4 bg-blue-500 text-white py-2 px-4 rounded"
+          >
+
             <img src="./components/home-icon.png" alt="home" />
           </button>
         </div>
@@ -83,7 +110,7 @@ let gridSize = 4; // Default grid size
 const sound1 = new Audio(shuffleSound);
 const sound2 = new Audio(moveSound);
 const sound3 = new Audio(backgroudSound);
-const test = "abc";
+
 
 const startGame = (difficulty) => {
   gameStarted.value = true;
