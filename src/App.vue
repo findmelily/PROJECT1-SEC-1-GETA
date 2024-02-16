@@ -78,6 +78,7 @@
             @click="home"
             class="m-2 mt-4 btn btn-success py-1 px-6 rounded-2"
           >
+
             <img src="./components/home-icon.png" alt="home" />
           </button>
         </div>
@@ -89,10 +90,12 @@
 <script setup>
 // เปลี่ยนเป็น script setup
 
+
 import { ref, onMounted } from "vue"
 import shuffleSound from "./assets/sounds/sound1.mp3"
 import moveSound from "./assets/sounds/sound2.mp3"
 import backgroudSound from "./assets/sounds/sound3.mp3"
+
 
 // เพิ่มประกาศตัวแปร timerInterval
 let timerInterval = null
@@ -117,6 +120,7 @@ const sound1 = new Audio(shuffleSound)
 const sound2 = new Audio(moveSound)
 const sound3 = new Audio(backgroudSound)
 
+
 const startGame = (difficulty) => {
   gameStarted.value = true
   gridSize = difficultyLevels[difficulty].size
@@ -129,6 +133,7 @@ const startGame = (difficulty) => {
   shuffle()
   Timer()
 }
+
 
 const playShuffleSound = () => {
   sound1.play()
@@ -171,10 +176,12 @@ const formatTime = (time) => {
 }
 
 const shuffle = () => {
+
   const totalTiles = gridSize * gridSize
 
   const tilesArray = [...Array(totalTiles).keys()].slice(1) // Generate numbers from 1 to totalTiles - 1
   tilesArray.push(0) // Add the empty tile
+
 
   do {
     tilesArray.sort(() => Math.random() - 0.5) // Shuffle the tiles
@@ -191,6 +198,7 @@ const moveTile = (index) => {
     ;[tiles.value[index], tiles.value[emptyIndex]] = [
       tiles.value[emptyIndex],
       tiles.value[index],
+
     ]
 
     if (isSolved()) {
@@ -198,15 +206,18 @@ const moveTile = (index) => {
         alert("Congratulations")
         gameStarted.value = false
       }, 1000)
+
     }
   }
 }
 
 const isValidMove = (index, emptyIndex) => {
+
   const row = Math.floor(index / gridSize)
   const col = index % gridSize
   const emptyRow = Math.floor(emptyIndex / gridSize)
   const emptyCol = emptyIndex % gridSize
+
 
   return (
     (row === emptyRow && Math.abs(col - emptyCol) === 1) ||
@@ -231,6 +242,7 @@ const isSolved = () => {
 
   return true
 }
+
 
 const isSolvable = (tilesArray) => {
   let inversions = 0
@@ -268,14 +280,15 @@ onMounted(() => {
   Timer()
 })
 
+
 const home = () => {
-  gameStarted.value = false
+  gameStarted.value = false;
 
   // ยกเลิก setInterval เก่า
 
-  clearInterval(timerInterval)
-  time.value = 0
-}
+  clearInterval(timerInterval);
+  time.value = 0;
+};
 </script>
 
 <style scoped>
