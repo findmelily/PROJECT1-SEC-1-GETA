@@ -10,12 +10,13 @@
         class="icon"
       />
     </button>
+
     <div class="flex flex-col items-center py-10 center">
       <h1 class="text-7xl text-white font-bold mb-10">15 Puzzle Game</h1>
       <div
         v-if="!gameStarted"
         class="mb-10 center1"
-        @click="playbackgroudSound"
+        @click="playbackgroudSound()"
       >
         <button
           @click="startGame('easy')"
@@ -74,6 +75,7 @@
               }
             "
             class="m-2 mt-4 mr-20 btn btn-success py-1 px-6 rounded-2"
+            ioon
           >
             <img src="./components/shuffle-icon.png" alt="shuffle" />
           </button>
@@ -103,6 +105,7 @@ import { ref, onMounted } from "vue"
 import shuffleSound from "./assets/sounds/sound1.mp3"
 import moveSound from "./assets/sounds/sound2.mp3"
 import backgroudSound from "./assets/sounds/sound3.mp3"
+
 import volumeImage from "./components/volume-icon.png"
 import muteImage from "./components/mute-icon.png"
 
@@ -414,6 +417,7 @@ img {
 
   .btn {
     font-size: 40px;
+
     margin-right: 2px;
     margin-top: 20px;
   }
