@@ -4,22 +4,13 @@
       <h1 class="text-3xl text-white font-bold mb-4">15 Puzzle Game</h1>
 
       <div v-if="!gameStarted" class="mb-4" @click="playbackgroudSound()">
-        <button
-          @click="startGame('easy')"
-          class="bg-blue-500 text-white py-2 px-4 rounded mr-2"
-        >
+        <button @click="startGame('easy')" class="bg-blue-500 text-white py-2 px-4 rounded mr-2">
           Easy
         </button>
-        <button
-          @click="startGame('medium')"
-          class="bg-blue-500 text-white py-2 px-4 rounded mr-2"
-        >
+        <button @click="startGame('medium')" class="bg-blue-500 text-white py-2 px-4 rounded mr-2">
           Medium
         </button>
-        <button
-          @click="startGame('hard')"
-          class="bg-blue-500 text-white py-2 px-4 rounded"
-        >
+        <button @click="startGame('hard')" class="bg-blue-500 text-white py-2 px-4 rounded">
           Hard
         </button>
       </div>
@@ -31,17 +22,11 @@
         </div>
         <div class="flex">
           <div class="grid" :class="'grid-cols-' + gridSize + ' gap-2'">
-            <div
-              v-for="(tile, index) in tiles"
-              :key="index"
-              @click="
-                () => {
-                  moveTile(index);
-                  playMoveSound();
-                }
-              "
-              :class="tile === index + 1 ? correctTileStyle : normalTileStyle"
-            >
+            <div v-for="(tile, index) in tiles" :key="index" @click="() => {
+              moveTile(index);
+              playMoveSound();
+            }
+              " :class="tile === index + 1 ? correctTileStyle : normalTileStyle">
               {{ tile === 0 ? "" : tile }}
             </div>
           </div>
@@ -49,38 +34,32 @@
         <div class="flex-2">
           <!-- add click with sound effect -->
 
-          <button
-            @click="
-              () => {
-                shuffle();
-                playShuffleSound();
-              }
-            "
-            class="m-2 mt-4 bg-blue-500 text-white py-2 px-4 rounded"
-          >
+          <button @click="() => {
+            shuffle();
+            playShuffleSound();
+          }
+            " class="m-2 mt-4 bg-blue-500 text-white py-2 px-4 rounded">
             <img src="./components/shuffle-icon.png" alt="shuffle" />
           </button>
           <!-- add button to complete the game (โกง)-->
-          <button
-            @click="isComplete"
-            class="m-2 mt-4 bg-green-500 text-white py-2 px-4 rounded"
-          >
+          <button @click="isComplete" class="m-2 mt-4 bg-green-500 text-white py-2 px-4 rounded">
             Complete (โกง)
           </button>
-          <button
-            @click="home"
-            class="m-2 mt-4 bg-blue-500 text-white py-2 px-4 rounded"
-          >
+          <button @click="home" class="m-2 mt-4 bg-blue-500 text-white py-2 px-4 rounded">
             <img src="./components/home-icon.png" alt="home" />
           </button>
 
           <!-- modal -->
           <dialog id="my_modal_1" class="modal" v-if="isSolved">
             <div class="modal-box">
-              <h3 class="font-bold text-lg">Congratulations</h3>
-              <p class="py-4">
-                Press ESC key or click the button below to home
-              </p>
+              <h4 class="font-bold text-lg">Congratulations</h4>
+              <div class="py-4">
+                <h3 class="font-bold text-lg">Summary</h3>
+                <div class="flex">
+                  <div class="mb-2 m-2 text-white">Your Moves: {{ moves }} &</div>
+                  <div class="mb-2 m-2 text-white">Your Time: {{ formatTime(time) }}</div>
+                </div>
+              </div>
               <div class="modal-action">
                 <form method="dialog">
                   <button class="btn" @click="home">Close and Go Home</button>
