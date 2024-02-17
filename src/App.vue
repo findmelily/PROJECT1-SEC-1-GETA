@@ -1,5 +1,16 @@
 <template>
   <div class="game-container">
+    <button
+      @click="toggleMute"
+      class="m-2 mt-4 btn btn-warning py-1 px-4 rounded-2"
+    >
+      <img
+        :src="soundMute ? muteImage : volumeImage"
+        alt="Toggle Mute"
+        class="icon"
+      />
+    </button>
+
     <div class="flex flex-col items-center py-10 center">
       <h1 class="text-7xl text-white font-bold mb-10">15 Puzzle Game</h1>
       <div
@@ -64,6 +75,7 @@
               }
             "
             class="m-2 mt-4 mr-20 btn btn-success py-1 px-6 rounded-2"
+            ioon
           >
             <img src="./components/shuffle-icon.png" alt="shuffle" />
           </button>
@@ -78,7 +90,6 @@
             @click="home"
             class="m-2 mt-4 btn btn-success py-1 px-6 rounded-2"
           >
-
             <img src="./components/home-icon.png" alt="home" />
           </button>
         </div>
@@ -90,12 +101,13 @@
 <script setup>
 // เปลี่ยนเป็น script setup
 
-
 import { ref, onMounted } from "vue"
 import shuffleSound from "./assets/sounds/sound1.mp3"
 import moveSound from "./assets/sounds/sound2.mp3"
 import backgroudSound from "./assets/sounds/sound3.mp3"
 
+import volumeImage from "./components/volume-icon.png"
+import muteImage from "./components/mute-icon.png"
 
 // เพิ่มประกาศตัวแปร timerInterval
 let timerInterval = null
@@ -120,7 +132,6 @@ const sound1 = new Audio(shuffleSound)
 const sound2 = new Audio(moveSound)
 const sound3 = new Audio(backgroudSound)
 
-
 const startGame = (difficulty) => {
   gameStarted.value = true
   gridSize = difficultyLevels[difficulty].size
@@ -134,18 +145,23 @@ const startGame = (difficulty) => {
   Timer()
 }
 
-
 const playShuffleSound = () => {
-  sound1.play()
+  if (!soundMute.value) {
+    sound1.play()
+  }
 }
 
 const playMoveSound = () => {
-  sound2.play()
+  if (!soundMute.value) {
+    sound2.play()
+  }
 }
 
 const playbackgroudSound = () => {
-  sound3.play()
-  sound3.loop = true
+  if (!soundMute.value) {
+    sound3.play()
+    sound3.loop = true
+  }
 }
 
 const initializeGame = () => {
@@ -176,12 +192,10 @@ const formatTime = (time) => {
 }
 
 const shuffle = () => {
-
   const totalTiles = gridSize * gridSize
 
   const tilesArray = [...Array(totalTiles).keys()].slice(1) // Generate numbers from 1 to totalTiles - 1
   tilesArray.push(0) // Add the empty tile
-
 
   do {
     tilesArray.sort(() => Math.random() - 0.5) // Shuffle the tiles
@@ -198,7 +212,6 @@ const moveTile = (index) => {
     ;[tiles.value[index], tiles.value[emptyIndex]] = [
       tiles.value[emptyIndex],
       tiles.value[index],
-
     ]
 
     if (isSolved()) {
@@ -206,18 +219,15 @@ const moveTile = (index) => {
         alert("Congratulations")
         gameStarted.value = false
       }, 1000)
-
     }
   }
 }
 
 const isValidMove = (index, emptyIndex) => {
-
   const row = Math.floor(index / gridSize)
   const col = index % gridSize
   const emptyRow = Math.floor(emptyIndex / gridSize)
   const emptyCol = emptyIndex % gridSize
-
 
   return (
     (row === emptyRow && Math.abs(col - emptyCol) === 1) ||
@@ -242,7 +252,6 @@ const isSolved = () => {
 
   return true
 }
-
 
 const isSolvable = (tilesArray) => {
   let inversions = 0
@@ -280,15 +289,36 @@ onMounted(() => {
   Timer()
 })
 
-
 const home = () => {
-  gameStarted.value = false;
+  gameStarted.value = false
 
   // ยกเลิก setInterval เก่า
 
-  clearInterval(timerInterval);
-  time.value = 0;
-};
+  clearInterval(timerInterval)
+  time.value = 0
+}
+
+const soundMute = ref(false)
+
+const toggleMute = () => {
+  soundMute.value = !soundMute.value
+
+  if (soundMute.value) {
+    pauseAllSounds()
+  } else {
+    if (sound3.currentTime === 0 || sound3.currentTime === sound3.duration) {
+      playbackgroudSound()
+    }
+  }
+}
+
+const pauseAllSounds = () => {
+  sound1.pause()
+  sound2.pause()
+  sound3.pause()
+  // Reset the currentTime when paused
+  sound3.currentTime = 0
+}
 </script>
 
 <style scoped>
@@ -359,13 +389,19 @@ img {
     rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
 }
 
+.icon {
+  width: 35px; /* Set the desired width */
+  height: 40px; /* Set the desired height */
+  margin-right: 5px; /* Adjust margin as needed */
+}
+
 /* Responsive */
 @media only screen and (max-width: 768px) {
   h1 {
     font-size: 50px;
   }
   .game-container {
-    padding: 10px; 
+    padding: 10px;
   }
 
   .center {
@@ -380,7 +416,8 @@ img {
   }
 
   .btn {
-    font-size: 40px; 
+    font-size: 40px;
+
     margin-right: 2px;
     margin-top: 20px;
   }
@@ -390,15 +427,15 @@ img {
   }
 
   .grid {
-    max-width: 300px; 
-    margin: 0 auto; 
+    max-width: 300px;
+    margin: 0 auto;
   }
 
   .boxshadow1,
   .boxshadow2 {
-    width: 50px; 
+    width: 50px;
     height: 50px;
-    font-size: 20px; 
+    font-size: 20px;
   }
 }
 </style>
