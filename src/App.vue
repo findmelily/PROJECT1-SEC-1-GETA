@@ -13,6 +13,7 @@
 
     <div class="flex flex-col items-center py-10 center">
       <h1 class="text-7xl text-white font-bold mb-10">15 Puzzle Game</h1>
+
       <div
         v-if="!gameStarted"
         class="mb-10 center1"
@@ -35,7 +36,6 @@
           @click="startGame('hard')"
           class="btn btn-error text-white py-2 px-4 rounded-2 mr-2 size-auto font-light"
         >
-
           Hard
         </button>
       </div>
@@ -49,20 +49,18 @@
         </div>
         <div class="flex">
           <div class="grid" :class="'grid-cols-' + gridSize + ' gap-2'">
-
             <div
               class="moveTitle"
               v-for="(tile, index) in tiles"
               :key="index"
               @click="
                 () => {
-                  moveTile(index)
-                  playMoveSound()
+                  moveTile(index);
+                  playMoveSound();
                 }
               "
               :class="tile === index + 1 ? correctTileStyle : normalTileStyle"
             >
-
               {{ tile === 0 ? "" : tile }}
             </div>
           </div>
@@ -73,8 +71,8 @@
           <button
             @click="
               () => {
-                shuffle()
-                playShuffleSound()
+                shuffle();
+                playShuffleSound();
               }
             "
             class="m-2 mt-4 mr-20 btn btn-success py-1 px-6 rounded-2"
@@ -82,18 +80,10 @@
           >
             <img src="./components/shuffle-icon.png" alt="shuffle" />
           </button>
-          <!-- add button to complete the game (โกง)-->
-          <!-- <button
-            @click="isComplete"
-            class="m-2 mt-4 bg-green-500 text-white py-2 px-4 rounded"
-          >
-            Complete (โกง)
-          </button> -->
           <button
             @click="home"
             class="m-2 mt-4 btn btn-success py-1 px-6 rounded-2"
           >
-
             <img src="./components/home-icon.png" alt="home" />
           </button>
 
@@ -116,6 +106,9 @@
             </div>
           </dialog>
         </div>
+        <button @click="isComplete" class="text-sm text-gray-500">
+          Complete (โกง)
+        </button>
       </div>
     </div>
   </div>
@@ -124,147 +117,143 @@
 <script setup>
 // เปลี่ยนเป็น script setup
 
-import { ref, onMounted } from "vue"
-import shuffleSound from "./assets/sounds/sound1.mp3"
-import moveSound from "./assets/sounds/sound2.mp3"
-import backgroudSound from "./assets/sounds/sound3.mp3"
+import { ref, onMounted } from "vue";
+import shuffleSound from "./assets/sounds/sound1.mp3";
+import moveSound from "./assets/sounds/sound2.mp3";
+import backgroudSound from "./assets/sounds/sound3.mp3";
 
-import volumeImage from "./components/volume-icon.png"
-import muteImage from "./components/mute-icon.png"
+import volumeImage from "./components/volume-icon.png";
+import muteImage from "./components/mute-icon.png";
 
 // เพิ่มประกาศตัวแปร timerInterval
-let timerInterval = null
+let timerInterval = null;
 
-const normalTileStyle = `boxshadow1 w-20 h-20  flex items-center justify-center text-3xl cursor-pointer bg-white border-gray-300`
-const correctTileStyle = `boxshadow2 w-20 h-20  flex items-center justify-center text-3xl cursor-pointer bg-purple-700 text-warning`
+const normalTileStyle = `boxshadow1 w-20 h-20  flex items-center justify-center text-3xl cursor-pointer bg-white border-gray-300`;
+const correctTileStyle = `boxshadow2 w-20 h-20  flex items-center justify-center text-3xl cursor-pointer bg-purple-700 text-warning`;
 
 const difficultyLevels = {
   easy: { size: 4 },
   medium: { size: 5 },
   hard: { size: 6 },
-}
+};
 
-const tiles = ref([])
-const moves = ref(0)
-const gameStarted = ref(false)
-const time = ref(0)
-let gridSize = 4 // Default grid size
+const tiles = ref([]);
+const moves = ref(0);
+const gameStarted = ref(false);
+const time = ref(0);
+let gridSize = 4; // Default grid size
 
 //all sounds
 
-const sound1 = new Audio(shuffleSound)
-const sound2 = new Audio(moveSound)
-const sound3 = new Audio(backgroudSound)
-
+const sound1 = new Audio(shuffleSound);
+const sound2 = new Audio(moveSound);
+const sound3 = new Audio(backgroudSound);
 
 const startGame = (difficulty) => {
-  gameStarted.value = true
-  gridSize = difficultyLevels[difficulty].size
+  gameStarted.value = true;
+  gridSize = difficultyLevels[difficulty].size;
 
   // เพิ่มยกเลิก setInterval เก่า
 
-  clearInterval(timerInterval)
-  time.value = 0
-  initializeGame()
-  shuffle()
-  Timer()
-}
+  clearInterval(timerInterval);
+  time.value = 0;
+  initializeGame();
+  shuffle();
+  Timer();
+};
 
 const playShuffleSound = () => {
   if (!soundMute.value) {
-    sound1.play()
+    sound1.play();
   }
-}
+};
 
 const playMoveSound = () => {
   if (!soundMute.value) {
-    sound2.play()
+    sound2.play();
   }
-}
+};
 
 const playbackgroudSound = () => {
   if (!soundMute.value) {
-    sound3.play()
-    sound3.loop = true
+    sound3.play();
+    sound3.loop = true;
   }
-}
+};
 
 const initializeGame = () => {
-  const totalTiles = gridSize * gridSize
-  const tilesArray = [...Array(totalTiles).keys()].slice(1) // Generate numbers from 1 to totalTiles - 1
-  tilesArray.push(0) // Add the empty tile
+  const totalTiles = gridSize * gridSize;
+  const tilesArray = [...Array(totalTiles).keys()].slice(1); // Generate numbers from 1 to totalTiles - 1
+  tilesArray.push(0); // Add the empty tile
   do {
-    tilesArray.sort(() => Math.random() - 0.5) // Shuffle the tiles
-  } while (!isSolvable(tilesArray))
-  tiles.value = tilesArray
-  moves.value = 0
-  time.value = 0
-}
+    tilesArray.sort(() => Math.random() - 0.5); // Shuffle the tiles
+  } while (!isSolvable(tilesArray));
+  tiles.value = tilesArray;
+  moves.value = 0;
+  time.value = 0;
+};
 
 const Timer = () => {
   //เพิ่มตัวแปร timerInterval
 
   timerInterval = setInterval(() => {
-    time.value++
-  }, 1000)
-}
+    time.value++;
+  }, 1000);
+};
 
 const formatTime = (time) => {
-  const hours = `0${Math.floor(time / 3600)}`.slice(-2)
-  const minutes = `0${Math.floor((time % 3600) / 60)}`.slice(-2)
-  const seconds = `0${time % 60}`.slice(-2)
-  return `${hours}:${minutes}:${seconds}`
-}
+  const hours = `0${Math.floor(time / 3600)}`.slice(-2);
+  const minutes = `0${Math.floor((time % 3600) / 60)}`.slice(-2);
+  const seconds = `0${time % 60}`.slice(-2);
+  return `${hours}:${minutes}:${seconds}`;
+};
 
 const shuffle = () => {
-  const totalTiles = gridSize * gridSize
+  const totalTiles = gridSize * gridSize;
 
-  const tilesArray = [...Array(totalTiles).keys()].slice(1) // Generate numbers from 1 to totalTiles - 1
-  tilesArray.push(0) // Add the empty tile
+  const tilesArray = [...Array(totalTiles).keys()].slice(1); // Generate numbers from 1 to totalTiles - 1
+  tilesArray.push(0); // Add the empty tile
 
   do {
-    tilesArray.sort(() => Math.random() - 0.5) // Shuffle the tiles
-  } while (!isSolvable(tilesArray))
-  tiles.value = tilesArray
-  moves.value = 0
-  time.value = 0
-}
+    tilesArray.sort(() => Math.random() - 0.5); // Shuffle the tiles
+  } while (!isSolvable(tilesArray));
+  tiles.value = tilesArray;
+  moves.value = 0;
+  time.value = 0;
+};
 
 const moveTile = (index) => {
-  const emptyIndex = tiles.value.indexOf(0)
+  const emptyIndex = tiles.value.indexOf(0);
   if (isValidMove(index, emptyIndex)) {
-    moves.value++
-    ;[tiles.value[index], tiles.value[emptyIndex]] = [
+    moves.value++;
+    [tiles.value[index], tiles.value[emptyIndex]] = [
       tiles.value[emptyIndex],
       tiles.value[index],
-    ]
-
+    ];
     if (isSolved()) {
-
       clearInterval(timerInterval);
       setTimeout(() => {
         my_modal_1.showModal();
       }, 1000);
-
     }
   }
-}
+};
 
 const isValidMove = (index, emptyIndex) => {
-  const row = Math.floor(index / gridSize)
-  const col = index % gridSize
-  const emptyRow = Math.floor(emptyIndex / gridSize)
-  const emptyCol = emptyIndex % gridSize
+  const row = Math.floor(index / gridSize);
+  const col = index % gridSize;
+  const emptyRow = Math.floor(emptyIndex / gridSize);
+  const emptyCol = emptyIndex % gridSize;
 
   return (
     (row === emptyRow && Math.abs(col - emptyCol) === 1) ||
     (col === emptyCol && Math.abs(row - emptyRow) === 1)
-  )
-}
+  );
+};
 
 const isTileInCorrectPosition = (index) => {
-  return tiles.value[index] === index + 1
-}
+  return tiles.value[index] === index + 1;
+};
 
 // const isTileInCorrectPosition = (index) => {
 //   return tiles.value[index] === index + 1;
@@ -273,17 +262,16 @@ const isTileInCorrectPosition = (index) => {
 const isSolved = () => {
   for (let i = 0; i < tiles.value.length - 1; i++) {
     if (tiles.value[i] !== i + 1) {
-      return false
+      return false;
     }
   }
 
   return true;
 };
 
-
 const isSolvable = (tilesArray) => {
-  let inversions = 0
-  const length = tilesArray.length
+  let inversions = 0;
+  const length = tilesArray.length;
   for (let i = 0; i < length - 1; i++) {
     for (let j = i + 1; j < length; j++) {
       if (
@@ -291,62 +279,62 @@ const isSolvable = (tilesArray) => {
         tilesArray[i] !== 0 &&
         tilesArray[j] !== 0
       ) {
-        inversions++
+        inversions++;
       }
     }
   }
-  const gridSizeEven = gridSize % 2 === 0
-  const blankOnEvenRowFromBottom = (length - tilesArray.indexOf(0)) % 2 === 0
+  const gridSizeEven = gridSize % 2 === 0;
+  const blankOnEvenRowFromBottom = (length - tilesArray.indexOf(0)) % 2 === 0;
   return (
     (gridSizeEven && !blankOnEvenRowFromBottom) ||
     (!gridSizeEven && inversions % 2 === 0)
-  )
-}
+  );
+};
 
 const isComplete = () => {
-  tiles.value.sort((a, b) => a - b)
-  const emptyIndex = tiles.value.indexOf(0)
+  tiles.value.sort((a, b) => a - b);
+  const emptyIndex = tiles.value.indexOf(0);
   if (emptyIndex === 0) {
-    tiles.value.shift()
-    tiles.value.push(emptyIndex)
+    tiles.value.shift();
+    tiles.value.push(emptyIndex);
   }
-}
+};
 
 onMounted(() => {
-  initializeGame()
-  Timer()
-})
+  initializeGame();
+  Timer();
+});
 
 const home = () => {
-  gameStarted.value = false
+  gameStarted.value = false;
 
   // ยกเลิก setInterval เก่า
 
-  clearInterval(timerInterval)
-  time.value = 0
-}
+  clearInterval(timerInterval);
+  time.value = 0;
+};
 
-const soundMute = ref(false)
+const soundMute = ref(false);
 
 const toggleMute = () => {
-  soundMute.value = !soundMute.value
+  soundMute.value = !soundMute.value;
 
   if (soundMute.value) {
-    pauseAllSounds()
+    pauseAllSounds();
   } else {
     if (sound3.currentTime === 0 || sound3.currentTime === sound3.duration) {
-      playbackgroudSound()
+      playbackgroudSound();
     }
   }
-}
+};
 
 const pauseAllSounds = () => {
-  sound1.pause()
-  sound2.pause()
-  sound3.pause()
+  sound1.pause();
+  sound2.pause();
+  sound3.pause();
   // Reset the currentTime when paused
-  sound3.currentTime = 0
-}
+  sound3.currentTime = 0;
+};
 </script>
 
 <style scoped>
