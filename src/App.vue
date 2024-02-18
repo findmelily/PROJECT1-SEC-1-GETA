@@ -35,6 +35,7 @@
           @click="startGame('hard')"
           class="btn btn-error text-white py-2 px-4 rounded-2 mr-2 size-auto font-light"
         >
+
           Hard
         </button>
       </div>
@@ -48,6 +49,7 @@
         </div>
         <div class="flex">
           <div class="grid" :class="'grid-cols-' + gridSize + ' gap-2'">
+
             <div
               class="moveTitle"
               v-for="(tile, index) in tiles"
@@ -60,6 +62,7 @@
               "
               :class="tile === index + 1 ? correctTileStyle : normalTileStyle"
             >
+
               {{ tile === 0 ? "" : tile }}
             </div>
           </div>
@@ -90,8 +93,28 @@
             @click="home"
             class="m-2 mt-4 btn btn-success py-1 px-6 rounded-2"
           >
+
             <img src="./components/home-icon.png" alt="home" />
           </button>
+
+          <!-- modal -->
+          <dialog id="my_modal_1" class="modal" v-if="isSolved">
+            <div class="modal-box">
+              <h4 class="font-bold text-lg">Congratulations</h4>
+              <div class="py-4">
+                <h3 class="font-bold text-lg">Summary</h3>
+                <div class="flex">
+                  <div class="mb-2 m-2">Your Moves: {{ moves }} &</div>
+                  <div class="mb-2 m-2">Your Time: {{ formatTime(time) }}</div>
+                </div>
+              </div>
+              <div class="modal-action">
+                <form method="dialog">
+                  <button class="btn" @click="home">Close and Go Home</button>
+                </form>
+              </div>
+            </div>
+          </dialog>
         </div>
       </div>
     </div>
@@ -128,9 +151,11 @@ const time = ref(0)
 let gridSize = 4 // Default grid size
 
 //all sounds
+
 const sound1 = new Audio(shuffleSound)
 const sound2 = new Audio(moveSound)
 const sound3 = new Audio(backgroudSound)
+
 
 const startGame = (difficulty) => {
   gameStarted.value = true
@@ -215,10 +240,12 @@ const moveTile = (index) => {
     ]
 
     if (isSolved()) {
-      setTimeout(function () {
-        alert("Congratulations")
-        gameStarted.value = false
-      }, 1000)
+
+      clearInterval(timerInterval);
+      setTimeout(() => {
+        my_modal_1.showModal();
+      }, 1000);
+
     }
   }
 }
@@ -250,8 +277,9 @@ const isSolved = () => {
     }
   }
 
-  return true
-}
+  return true;
+};
+
 
 const isSolvable = (tilesArray) => {
   let inversions = 0
