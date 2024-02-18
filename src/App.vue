@@ -56,8 +56,8 @@
               <div class="py-4">
                 <h3 class="font-bold text-lg">Summary</h3>
                 <div class="flex">
-                  <div class="mb-2 m-2 text-white">Your Moves: {{ moves }} &</div>
-                  <div class="mb-2 m-2 text-white">Your Time: {{ formatTime(time) }}</div>
+                  <div class="mb-2 m-2">Your Moves: {{ moves }} &</div>
+                  <div class="mb-2 m-2">Your Time: {{ formatTime(time) }}</div>
                 </div>
               </div>
               <div class="modal-action">
