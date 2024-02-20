@@ -20,7 +20,7 @@
         class="mb-10 center1"
         @click="playbackgroudSound()"
       >
-        <button
+        <button>
           @click="startGame('easy')"
           class="btn btn-success text-white py-2 px-8 rounded-2 mr-10 size-auto font-light"
         >
