@@ -20,7 +20,7 @@
         class="mb-10 center1"
         @click="playbackgroudSound()"
       >
-        <button>
+        <button
           @click="startGame('easy')"
           class="btn btn-success text-white py-2 px-8 rounded-2 mr-10 size-auto font-light"
         >
@@ -201,15 +201,12 @@ const isSolvable = (tilesArray) => {
   const length = tilesArray.length;
   for (let i = 0; i < length - 1; i++) {
     for (let j = i + 1; j < length; j++) {
-      if (
-        tilesArray[i] > tilesArray[j] &&
-        tilesArray[i] !== 0 &&
-        tilesArray[j] !== 0
-      ) {
+      if (tilesArray[i] > tilesArray[j] && tilesArray[i] !== 0 && tilesArray[j] !== 0) {
         inversions++;
       }
     }
   }
+  return inversions % 2 === 0;
 };
 
 const Timer = () => {
