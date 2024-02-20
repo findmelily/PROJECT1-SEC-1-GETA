@@ -11,6 +11,7 @@
       />
     </button>
 
+    <!-- Game title and difficulty selection -->
     <div class="flex flex-col items-center py-10 center">
       <h1 class="text-7xl text-white font-bold mb-10">15 Puzzle Game</h1>
 
@@ -40,6 +41,7 @@
         </button>
       </div>
 
+      <!-- Game grid and controls -->
       <div v-if="gameStarted" class="flex flex-col items-center">
         <div class="flex">
           <div class="mb-2 m-2 text-white text-2xl">Moves: {{ moves }}</div>
@@ -47,6 +49,8 @@
             Time: {{ formatTime(time) }}
           </div>
         </div>
+
+        <!-- Puzzle grid -->
         <div class="flex">
           <div class="grid" :class="'grid-cols-' + gridSize + ' gap-2'">
             <div
@@ -67,7 +71,6 @@
         </div>
         <div class="flex-2">
           <!-- add click with sound effect -->
-
           <button
             @click="
               () => {
@@ -100,11 +103,9 @@
               </div>
               <div class="modal-action">
                 <form method="dialog">
-
                   <button class="btn1 py-2 px-8 rounded-2 mr-7" @click="home">
                     Close and Go Home
                   </button>
-
                 </form>
               </div>
             </div>
@@ -120,15 +121,12 @@
 
 <script setup>
 // เปลี่ยนเป็น script setup
-
 import { ref, onMounted } from "vue";
 import shuffleSound from "./assets/sounds/sound1.mp3";
 import moveSound from "./assets/sounds/sound2.mp3";
 import backgroudSound from "./assets/sounds/sound3.mp3";
-
 import volumeImage from "./components/volume-icon.png";
 import muteImage from "./components/mute-icon.png";
-
 
 // เพิ่มประกาศตัวแปร timerInterval
 let timerInterval = null;
@@ -147,19 +145,18 @@ const moves = ref(0);
 const gameStarted = ref(false);
 const time = ref(0);
 let gridSize = 4; // Default grid size
+const soundMute = ref(false);
 
 //all sounds
-const sound1 = new Audio(shuffleSound)
-const sound2 = new Audio(moveSound)
-const sound3 = new Audio(backgroudSound)
-
+const sound1 = new Audio(shuffleSound);
+const sound2 = new Audio(moveSound);
+const sound3 = new Audio(backgroudSound);
 
 const startGame = (difficulty) => {
   gameStarted.value = true;
   gridSize = difficultyLevels[difficulty].size;
 
   // เพิ่มยกเลิก setInterval เก่า
-
 
   clearInterval(timerInterval);
   time.value = 0;
@@ -187,7 +184,6 @@ const playbackgroudSound = () => {
   }
 };
 
-
 const initializeGame = () => {
   const totalTiles = gridSize * gridSize;
   const tilesArray = [...Array(totalTiles).keys()].slice(1); // Generate numbers from 1 to totalTiles - 1
@@ -200,9 +196,24 @@ const initializeGame = () => {
   time.value = 0;
 };
 
+const isSolvable = (tilesArray) => {
+  let inversions = 0;
+  const length = tilesArray.length;
+  for (let i = 0; i < length - 1; i++) {
+    for (let j = i + 1; j < length; j++) {
+      if (
+        tilesArray[i] > tilesArray[j] &&
+        tilesArray[i] !== 0 &&
+        tilesArray[j] !== 0
+      ) {
+        inversions++;
+      }
+    }
+  }
+};
+
 const Timer = () => {
   //เพิ่มตัวแปร timerInterval
-
   timerInterval = setInterval(() => {
     time.value++;
   }, 1000);
@@ -216,12 +227,10 @@ const formatTime = (time) => {
 };
 
 const shuffle = () => {
+  const totalTiles = gridSize * gridSize;
 
-  const totalTiles = gridSize * gridSize
-
-  const tilesArray = [...Array(totalTiles).keys()].slice(1) // Generate numbers from 1 to totalTiles - 1
-  tilesArray.push(0) // Add the empty tile
-
+  const tilesArray = [...Array(totalTiles).keys()].slice(1); // Generate numbers from 1 to totalTiles - 1
+  tilesArray.push(0); // Add the empty tile
 
   do {
     tilesArray.sort(() => Math.random() - 0.5); // Shuffle the tiles
@@ -244,18 +253,14 @@ const moveTile = (index) => {
       setTimeout(() => {
         my_modal_1.showModal();
       }, 1000);
-
     }
   }
 };
-
 const isValidMove = (index, emptyIndex) => {
   const row = Math.floor(index / gridSize);
   const col = index % gridSize;
   const emptyRow = Math.floor(emptyIndex / gridSize);
   const emptyCol = emptyIndex % gridSize;
-
-
   return (
     (row === emptyRow && Math.abs(col - emptyCol) === 1) ||
     (col === emptyCol && Math.abs(row - emptyRow) === 1)
@@ -266,42 +271,13 @@ const isTileInCorrectPosition = (index) => {
   return tiles.value[index] === index + 1;
 };
 
-// const isTileInCorrectPosition = (index) => {
-//   return tiles.value[index] === index + 1;
-// };
-
 const isSolved = () => {
   for (let i = 0; i < tiles.value.length - 1; i++) {
     if (tiles.value[i] !== i + 1) {
       return false;
     }
   }
-
-
-  return true
-}
-
-
-const isSolvable = (tilesArray) => {
-  let inversions = 0;
-  const length = tilesArray.length;
-  for (let i = 0; i < length - 1; i++) {
-    for (let j = i + 1; j < length; j++) {
-      if (
-        tilesArray[i] > tilesArray[j] &&
-        tilesArray[i] !== 0 &&
-        tilesArray[j] !== 0
-      ) {
-        inversions++;
-      }
-    }
-  }
-  const gridSizeEven = gridSize % 2 === 0;
-  const blankOnEvenRowFromBottom = (length - tilesArray.indexOf(0)) % 2 === 0;
-  return (
-    (gridSizeEven && !blankOnEvenRowFromBottom) ||
-    (!gridSizeEven && inversions % 2 === 0)
-  );
+  return true;
 };
 
 const isComplete = () => {
@@ -312,23 +288,13 @@ const isComplete = () => {
     tiles.value.push(emptyIndex);
   }
 };
-
-onMounted(() => {
-
-  initializeGame();
-  Timer();
-});
-
-
 const home = () => {
-  gameStarted.value = false
+  gameStarted.value = false;
 
   // ยกเลิก setInterval เก่า
   clearInterval(timerInterval);
   time.value = 0;
 };
-
-const soundMute = ref(false);
 
 const toggleMute = () => {
   soundMute.value = !soundMute.value;
@@ -350,6 +316,10 @@ const pauseAllSounds = () => {
   sound3.currentTime = 0;
 };
 
+onMounted(() => {
+  initializeGame();
+  Timer();
+});
 </script>
 
 <style scoped>
@@ -487,7 +457,6 @@ img {
   }
   .btn1:hover {
     font-size: 20px;
-
   }
 }
 </style>
