@@ -100,7 +100,11 @@
               </div>
               <div class="modal-action">
                 <form method="dialog">
-                  <button class="btn" @click="home">Close and Go Home</button>
+
+                  <button class="btn1 py-2 px-8 rounded-2 mr-7" @click="home">
+                    Close and Go Home
+                  </button>
+
                 </form>
               </div>
             </div>
@@ -125,6 +129,7 @@ import backgroudSound from "./assets/sounds/sound3.mp3";
 import volumeImage from "./components/volume-icon.png";
 import muteImage from "./components/mute-icon.png";
 
+
 // เพิ่มประกาศตัวแปร timerInterval
 let timerInterval = null;
 
@@ -144,16 +149,17 @@ const time = ref(0);
 let gridSize = 4; // Default grid size
 
 //all sounds
+const sound1 = new Audio(shuffleSound)
+const sound2 = new Audio(moveSound)
+const sound3 = new Audio(backgroudSound)
 
-const sound1 = new Audio(shuffleSound);
-const sound2 = new Audio(moveSound);
-const sound3 = new Audio(backgroudSound);
 
 const startGame = (difficulty) => {
   gameStarted.value = true;
   gridSize = difficultyLevels[difficulty].size;
 
   // เพิ่มยกเลิก setInterval เก่า
+
 
   clearInterval(timerInterval);
   time.value = 0;
@@ -180,6 +186,7 @@ const playbackgroudSound = () => {
     sound3.loop = true;
   }
 };
+
 
 const initializeGame = () => {
   const totalTiles = gridSize * gridSize;
@@ -209,10 +216,12 @@ const formatTime = (time) => {
 };
 
 const shuffle = () => {
-  const totalTiles = gridSize * gridSize;
 
-  const tilesArray = [...Array(totalTiles).keys()].slice(1); // Generate numbers from 1 to totalTiles - 1
-  tilesArray.push(0); // Add the empty tile
+  const totalTiles = gridSize * gridSize
+
+  const tilesArray = [...Array(totalTiles).keys()].slice(1) // Generate numbers from 1 to totalTiles - 1
+  tilesArray.push(0) // Add the empty tile
+
 
   do {
     tilesArray.sort(() => Math.random() - 0.5); // Shuffle the tiles
@@ -235,6 +244,7 @@ const moveTile = (index) => {
       setTimeout(() => {
         my_modal_1.showModal();
       }, 1000);
+
     }
   }
 };
@@ -244,6 +254,7 @@ const isValidMove = (index, emptyIndex) => {
   const col = index % gridSize;
   const emptyRow = Math.floor(emptyIndex / gridSize);
   const emptyCol = emptyIndex % gridSize;
+
 
   return (
     (row === emptyRow && Math.abs(col - emptyCol) === 1) ||
@@ -266,8 +277,10 @@ const isSolved = () => {
     }
   }
 
-  return true;
-};
+
+  return true
+}
+
 
 const isSolvable = (tilesArray) => {
   let inversions = 0;
@@ -301,15 +314,16 @@ const isComplete = () => {
 };
 
 onMounted(() => {
+
   initializeGame();
   Timer();
 });
 
+
 const home = () => {
-  gameStarted.value = false;
+  gameStarted.value = false
 
   // ยกเลิก setInterval เก่า
-
   clearInterval(timerInterval);
   time.value = 0;
 };
@@ -335,6 +349,7 @@ const pauseAllSounds = () => {
   // Reset the currentTime when paused
   sound3.currentTime = 0;
 };
+
 </script>
 
 <style scoped>
@@ -396,6 +411,19 @@ img {
   font-size: 50px;
 }
 
+.btn1 {
+  font-size: 20px;
+  background-color: rgb(255, 221, 0);
+  border-radius: 10px;
+}
+
+.btn1:hover {
+  box-shadow: rgba(255, 255, 255, 0.2) 0 3px 15px inset,
+    rgba(0, 0, 0, 0.1) 0 3px 5px, rgba(0, 0, 0, 0.1) 0 10px 13px;
+  transform: scale(1.05);
+  font-size: 20px;
+}
+
 .boxshadow1 {
   box-shadow: rgba(9, 14, 87, 0.5) 0px 2px 4px 0px inset;
 }
@@ -452,6 +480,14 @@ img {
     width: 50px;
     height: 50px;
     font-size: 20px;
+  }
+
+  .btn1 {
+    font-size: 20px;
+  }
+  .btn1:hover {
+    font-size: 20px;
+
   }
 }
 </style>
