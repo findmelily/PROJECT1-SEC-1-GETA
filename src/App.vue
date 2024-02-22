@@ -134,20 +134,12 @@ import { ref, onMounted } from "vue"
 import shuffleSound from "./assets/sounds/sound1.mp3"
 import moveSound from "./assets/sounds/sound2.mp3"
 import backgroudSound from "./assets/sounds/sound3.mp3"
+import congratsSound from "./assets/sounds/sound4.mp3"
 import volumeImage from "./components/volume-icon.png"
 import muteImage from "./components/mute-icon.png"
 
 // เพิ่มประกาศตัวแปร timerInterval
 let timerInterval = null
-
-const normalTileStyle = `boxshadow1 w-20 h-20  flex items-center justify-center text-3xl cursor-pointer bg-white border-gray-300`
-const correctTileStyle = `boxshadow2 w-20 h-20  flex items-center justify-center text-3xl cursor-pointer bg-purple-700 text-warning`
-
-const difficultyLevels = {
-  easy: { size: 4 },
-  medium: { size: 5 },
-  hard: { size: 6 },
-}
 
 const tiles = ref([])
 const moves = ref(0)
@@ -156,10 +148,20 @@ const time = ref(0)
 let gridSize = 4 // Default grid size
 const soundMute = ref(false)
 
+const normalTileStyle = `boxshadow1 w-20 h-20  flex items-center justify-center text-3xl cursor-pointer bg-white border-gray-300`
+const correctTileStyle = `boxshadow2 w-20 h-20  flex items-center justify-center text-3xl cursor-pointer bg-purple-700 text-warning`
+
 //all sounds
 const sound1 = new Audio(shuffleSound)
 const sound2 = new Audio(moveSound)
 const sound3 = new Audio(backgroudSound)
+const sound4 = new Audio(congratsSound)
+
+const difficultyLevels = {
+  easy: { size: 4 },
+  medium: { size: 5 },
+  hard: { size: 6 },
+}
 
 const startGame = (difficulty) => {
   gameStarted.value = true
@@ -191,6 +193,32 @@ const playbackgroudSound = () => {
     sound3.play()
     sound3.loop = true
   }
+}
+
+const playCongratsSound = () => {
+  if (!soundMute.value) {
+    sound4.play()
+  }
+}
+
+const toggleMute = () => {
+  soundMute.value = !soundMute.value
+
+  if (soundMute.value) {
+    pauseAllSounds()
+  } else {
+    if (sound3.currentTime === 0 || sound3.currentTime === sound3.duration) {
+      playbackgroudSound()
+    }
+  }
+}
+
+const pauseAllSounds = () => {
+  sound1.pause()
+  sound2.pause()
+  sound3.pause()
+  // Reset the currentTime when paused
+  sound3.currentTime = 0
 }
 
 const initializeGame = () => {
@@ -261,7 +289,7 @@ const moveTile = (index) => {
     if (isSolved()) {
       clearInterval(timerInterval)
       setTimeout(() => {
-        my_modal_1.showModal()
+        showModal()
       }, 400)
     }
   }
@@ -306,24 +334,9 @@ const home = () => {
   time.value = 0
 }
 
-const toggleMute = () => {
-  soundMute.value = !soundMute.value
-
-  if (soundMute.value) {
-    pauseAllSounds()
-  } else {
-    if (sound3.currentTime === 0 || sound3.currentTime === sound3.duration) {
-      playbackgroudSound()
-    }
-  }
-}
-
-const pauseAllSounds = () => {
-  sound1.pause()
-  sound2.pause()
-  sound3.pause()
-  // Reset the currentTime when paused
-  sound3.currentTime = 0
+const showModal = () => {
+  playCongratsSound()
+  my_modal_1.showModal()
 }
 
 onMounted(() => {
