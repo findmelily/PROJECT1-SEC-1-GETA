@@ -52,7 +52,7 @@ Number Puzzle เป็นเกมฝึกสมองโดยที่ผู
     - Medium mode ตาราง 5x5 มีเลขให้เรียงระหว่าง 1 - 24
     - Hard mode ตาราง 6x6 มีเลขให้เรียงระหว่าง 1 - 35
 
-    ![manual-6](/src/components/manual-6.png)
+![manual-7](/src/components/manual-7.png)  ![manual-8](/src/components/manual-8.png)  ![manual-9](/src/components/manual-9.png)
 
 * Shuffle Button
   สุ่มเรียงตัวเลขในช่องใหม่ในระดับความยากปัจจุบัน
@@ -62,11 +62,13 @@ Number Puzzle เป็นเกมฝึกสมองโดยที่ผู
 
 * Complete (ปุ่มโกง)
   จะเรียงเลขในกล่องทั้งหมดให้ถูกต้องอัตโนมัติ โดยเอาช่องว่างไปอยู่ตำแหน่งสุดท้าย ปุ่มนี้ใช้เพื่อทดสอบหน้าแสดงความยินดีที่มาพร้อมกับผลลัพธ์จากการเล่นเกมประกอบด้วย จำนวนการเคลื่อนย้ายที่ผู้เล่นทำได้ และเวลาที่ผู้เล่นได้ใช้ไป
-  
-  ![manual-5](/src/components/manual-5.png)
+
+![manual-6](/src/components/manual-6.png)
   
 * Sound Control
   สามารถเปิดปิดเสียงพื้นหลังและ sound effect ทั้งหมดได้
+
+![manual-5](/src/components/manual-5.png)
 
 * Moves
   จำนวนการเคลื่อนย้ายที่ผู้เล่นได้ใช้ไป
