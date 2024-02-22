@@ -4,19 +4,17 @@
       @click="toggleMute"
       class="m-2 mt-4 btn btn-warning py-1 px-4 rounded-2"
     >
-      <img
-        :src="soundMute ? muteImage : volumeImage"
-        alt="Toggle Mute"
-        class="icon"
-      />
+      <img :src="soundMute ? muteImage : volumeImage" class="icon" />
     </button>
 
+    <!-- Game title and difficulty selection -->
     <div class="flex flex-col items-center py-10 center">
       <h1 class="text-7xl text-white font-bold mb-10">15 Puzzle Game</h1>
+
       <div
         v-if="!gameStarted"
         class="mb-10 center1"
-        @click="playbackgroudSound()"
+        @click="playbackgroudSound"
       >
         <button
           @click="startGame('easy')"
@@ -39,13 +37,16 @@
         </button>
       </div>
 
+      <!-- Game grid and controls -->
       <div v-if="gameStarted" class="flex flex-col items-center">
         <div class="flex">
-          <div class="mb-2 m-2 text-white text-2xl">Moves: {{ moves }}</div>
+          <div class="mb-2 m-2 text-white text-2xl">Move: {{ moves }}</div>
           <div class="mb-2 m-2 text-white text-2xl">
             Time: {{ formatTime(time) }}
           </div>
         </div>
+
+        <!-- Puzzle grid -->
         <div class="flex">
           <div class="grid" :class="'grid-cols-' + gridSize + ' gap-2'">
             <div
@@ -66,7 +67,6 @@
         </div>
         <div class="flex-2">
           <!-- add click with sound effect -->
-
           <button
             @click="
               () => {
@@ -75,24 +75,54 @@
               }
             "
             class="m-2 mt-4 mr-20 btn btn-success py-1 px-6 rounded-2"
-            ioon
           >
             <img src="./components/shuffle-icon.png" alt="shuffle" />
           </button>
-          <!-- add button to complete the game (โกง)-->
-          <!-- <button
-            @click="isComplete"
-            class="m-2 mt-4 bg-green-500 text-white py-2 px-4 rounded"
-          >
-            Complete (โกง)
-          </button> -->
           <button
-            @click="home"
+            @click="
+              () => {
+                home(), pauseAllSounds()
+              }
+            "
             class="m-2 mt-4 btn btn-success py-1 px-6 rounded-2"
           >
             <img src="./components/home-icon.png" alt="home" />
           </button>
+
+          <!-- modal -->
+          <dialog id="my_modal_1" class="modal" v-if="isSolved">
+            <div class="modal-box flex flex-col items-center">
+              <h4 class="font-bold text-4xl">🏆 Congratulations 🏆</h4>
+              <div class="py-4">
+                <h3 class="text-3xl text-center m-4 mb-3">Summary</h3>
+                <div class="flex flex-col">
+                  <div class="text-center">Your Move: {{ moves }}</div>
+                  <br />
+                  <div class="text-center -m-6 -mb-2">
+                    Your Time: {{ formatTime(time) }}
+                  </div>
+                </div>
+              </div>
+              <div class="modal-action">
+                <form method="dialog">
+                  <button
+                    class="btn1 py-2 px-8 rounded-2"
+                    @click="
+                      () => {
+                        home(), pauseAllSounds()
+                      }
+                    "
+                  >
+                    Close and Go Home
+                  </button>
+                </form>
+              </div>
+            </div>
+          </dialog>
         </div>
+        <button @click="isComplete" class="text-sm text-gray-500">
+          Complete (โกง)
+        </button>
       </div>
     </div>
   </div>
@@ -100,12 +130,10 @@
 
 <script setup>
 // เปลี่ยนเป็น script setup
-
 import { ref, onMounted } from "vue"
 import shuffleSound from "./assets/sounds/sound1.mp3"
 import moveSound from "./assets/sounds/sound2.mp3"
 import backgroudSound from "./assets/sounds/sound3.mp3"
-
 import volumeImage from "./components/volume-icon.png"
 import muteImage from "./components/mute-icon.png"
 
@@ -126,6 +154,7 @@ const moves = ref(0)
 const gameStarted = ref(false)
 const time = ref(0)
 let gridSize = 4 // Default grid size
+const soundMute = ref(false)
 
 //all sounds
 const sound1 = new Audio(shuffleSound)
@@ -176,9 +205,25 @@ const initializeGame = () => {
   time.value = 0
 }
 
+const isSolvable = (tilesArray) => {
+  let inversions = 0
+  const length = tilesArray.length
+  for (let i = 0; i < length - 1; i++) {
+    for (let j = i + 1; j < length; j++) {
+      if (
+        tilesArray[i] > tilesArray[j] &&
+        tilesArray[i] !== 0 &&
+        tilesArray[j] !== 0
+      ) {
+        inversions++
+      }
+    }
+  }
+  return inversions % 2 === 0
+}
+
 const Timer = () => {
   //เพิ่มตัวแปร timerInterval
-
   timerInterval = setInterval(() => {
     time.value++
   }, 1000)
@@ -213,22 +258,19 @@ const moveTile = (index) => {
       tiles.value[emptyIndex],
       tiles.value[index],
     ]
-
     if (isSolved()) {
-      setTimeout(function () {
-        alert("Congratulations")
-        gameStarted.value = false
+      clearInterval(timerInterval)
+      setTimeout(() => {
+        my_modal_1.showModal()
       }, 1000)
     }
   }
 }
-
 const isValidMove = (index, emptyIndex) => {
   const row = Math.floor(index / gridSize)
   const col = index % gridSize
   const emptyRow = Math.floor(emptyIndex / gridSize)
   const emptyCol = emptyIndex % gridSize
-
   return (
     (row === emptyRow && Math.abs(col - emptyCol) === 1) ||
     (col === emptyCol && Math.abs(row - emptyRow) === 1)
@@ -239,40 +281,13 @@ const isTileInCorrectPosition = (index) => {
   return tiles.value[index] === index + 1
 }
 
-// const isTileInCorrectPosition = (index) => {
-//   return tiles.value[index] === index + 1;
-// };
-
 const isSolved = () => {
   for (let i = 0; i < tiles.value.length - 1; i++) {
     if (tiles.value[i] !== i + 1) {
       return false
     }
   }
-
   return true
-}
-
-const isSolvable = (tilesArray) => {
-  let inversions = 0
-  const length = tilesArray.length
-  for (let i = 0; i < length - 1; i++) {
-    for (let j = i + 1; j < length; j++) {
-      if (
-        tilesArray[i] > tilesArray[j] &&
-        tilesArray[i] !== 0 &&
-        tilesArray[j] !== 0
-      ) {
-        inversions++
-      }
-    }
-  }
-  const gridSizeEven = gridSize % 2 === 0
-  const blankOnEvenRowFromBottom = (length - tilesArray.indexOf(0)) % 2 === 0
-  return (
-    (gridSizeEven && !blankOnEvenRowFromBottom) ||
-    (!gridSizeEven && inversions % 2 === 0)
-  )
 }
 
 const isComplete = () => {
@@ -283,22 +298,13 @@ const isComplete = () => {
     tiles.value.push(emptyIndex)
   }
 }
-
-onMounted(() => {
-  initializeGame()
-  Timer()
-})
-
 const home = () => {
   gameStarted.value = false
 
   // ยกเลิก setInterval เก่า
-
   clearInterval(timerInterval)
   time.value = 0
 }
-
-const soundMute = ref(false)
 
 const toggleMute = () => {
   soundMute.value = !soundMute.value
@@ -319,6 +325,11 @@ const pauseAllSounds = () => {
   // Reset the currentTime when paused
   sound3.currentTime = 0
 }
+
+onMounted(() => {
+  initializeGame()
+  Timer()
+})
 </script>
 
 <style scoped>
@@ -380,6 +391,19 @@ img {
   font-size: 50px;
 }
 
+.btn1 {
+  font-size: 20px;
+  background-color: rgb(255, 221, 0);
+  border-radius: 10px;
+}
+
+.btn1:hover {
+  box-shadow: rgba(255, 255, 255, 0.2) 0 3px 15px inset,
+    rgba(0, 0, 0, 0.1) 0 3px 5px, rgba(0, 0, 0, 0.1) 0 10px 13px;
+  transform: scale(1.05);
+  font-size: 20px;
+}
+
 .boxshadow1 {
   box-shadow: rgba(9, 14, 87, 0.5) 0px 2px 4px 0px inset;
 }
@@ -435,6 +459,13 @@ img {
   .boxshadow2 {
     width: 50px;
     height: 50px;
+    font-size: 20px;
+  }
+
+  .btn1 {
+    font-size: 20px;
+  }
+  .btn1:hover {
     font-size: 20px;
   }
 }
