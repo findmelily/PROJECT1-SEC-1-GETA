@@ -262,7 +262,7 @@ const moveTile = (index) => {
       clearInterval(timerInterval)
       setTimeout(() => {
         my_modal_1.showModal()
-      }, 1000)
+      }, 400)
     }
   }
 }
